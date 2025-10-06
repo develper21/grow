@@ -1,5 +1,4 @@
 import { SIPFrequency, SIPCalculationResult } from '@/types/calculator';
-import { EMICalculationParams, EMICalculationResult } from '@/types/calculator';
 
 export const PAYMENTS_PER_YEAR: Record<SIPFrequency, number> = {
   daily: 365,
@@ -167,67 +166,3 @@ export function getFrequencyComparison(): { frequency: SIPFrequency; pros: strin
     }
   ];
 }
-
-export function calculateEMI({ principal, interestRate, years }: EMICalculationParams): EMICalculationResult {
-  const n = years * 12;
-  const r = interestRate / 12 / 100;
-  const emi = principal * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
-  let balance = principal;
-  let totalInterest = 0;
-  let totalPayment = 0;
-  const yearlyBreakup: EMICalculationResult['yearlyBreakup'] = [];
-
-  // Start from next month
-  const startDate = new Date();
-  startDate.setMonth(startDate.getMonth() + 1);
-
-  const yearMap: { [year: number]: EMICalculationResult['yearlyBreakup'][0] } = {};
-
-  for (let i = 0; i < n; i++) {
-    const emiDate = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
-    const year = emiDate.getFullYear();
-    const month = emiDate.toLocaleString('default', { month: 'short' });
-    const interest = balance * r;
-    const principalPaid = emi - interest;
-    totalInterest += interest;
-    totalPayment += emi;
-    balance -= principalPaid;
-
-    if (!yearMap[year]) {
-      yearMap[year] = {
-        year,
-        principalPaid: 0,
-        interestPaid: 0,
-        totalPayment: 0,
-        months: [],
-      };
-    }
-    yearMap[year].principalPaid += principalPaid;
-    yearMap[year].interestPaid += interest;
-    yearMap[year].totalPayment += emi;
-    yearMap[year].months.push({
-      month,
-      principalPaid: Math.round(principalPaid),
-      interestPaid: Math.round(interest),
-      totalPayment: Math.round(emi),
-      balance: Math.max(0, Math.round(balance)),
-    });
-  }
-
-  // Convert yearMap to array sorted by year
-  const sortedYears = Object.keys(yearMap).map(Number).sort((a, b) => a - b);
-  for (const y of sortedYears) {
-    const yb = yearMap[y];
-    yb.principalPaid = Math.round(yb.principalPaid);
-    yb.interestPaid = Math.round(yb.interestPaid);
-    yb.totalPayment = Math.round(yb.totalPayment);
-    yearlyBreakup.push(yb);
-  }
-
-  return {
-    emi: Math.round(emi),
-    totalInterest: Math.round(totalInterest),
-    totalPayment: Math.round(totalPayment),
-    yearlyBreakup,
-  };
-} 

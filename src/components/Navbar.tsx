@@ -8,13 +8,11 @@ import { ROUTES } from '@/constants/routes';
 
 const calculators = [
   { name: 'Home', href: ROUTES.HOME },
-  { name: 'Old vs New Regime', href: ROUTES.OLD_VS_NEW_REGIME },
-  { name: 'New Tax Regime (2025-26)', href: ROUTES.NEW_TAX_REGIME_2025_26 },
-  { name: 'Old Tax Regime', href: ROUTES.OLD_TAX_REGIME },
-  { name: 'SIP Calculator', href: ROUTES.SIP },
-  { name: 'EMI Calculator', href: ROUTES.EMI },
-  { name: 'Salary Calculator', href: ROUTES.SALARY },
-  { name: 'Contact / Feedback', href: ROUTES.CONTACT },
+  { name: 'SIP (Monthly)', href: ROUTES.SIP_MONTHLY },
+  { name: 'SIP (Daily)', href: ROUTES.SIP_DAILY },
+  { name: 'SIP (Weekly)', href: ROUTES.SIP_WEEKLY },
+  { name: 'SIP (Quarterly)', href: ROUTES.SIP_QUARTERLY },
+  { name: 'SIP (Yearly)', href: ROUTES.SIP_YEARLY },
 ];
 
 export default function Navbar() {

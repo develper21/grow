@@ -8,50 +8,22 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 py-10 flex flex-col items-center">
         <div className="w-full flex flex-col md:flex-row justify-center gap-8 text-center">
           <div className="flex-1 min-w-[200px]">
-            <h3 className="text-2xl font-bold mb-4">Income Tax</h3>
+            <h3 className="text-2xl font-bold mb-4">SIP</h3>
             <ul className="space-y-2">
               <li>
-                <Link href={ROUTES.OLD_VS_NEW_REGIME} className="hover:underline">Old vs New Regime Income Tax</Link>
+                <Link href={ROUTES.SIP_MONTHLY} className="hover:underline">SIP (Monthly)</Link>
               </li>
               <li>
-                <Link href={ROUTES.NEW_TAX_REGIME_2024_25} className="hover:underline">(New) Income Tax 2024-25</Link>
+                <Link href={ROUTES.SIP_WEEKLY} className="hover:underline">SIP (Weekly)</Link>
               </li>
               <li>
-                <Link href={ROUTES.NEW_TAX_REGIME_2025_26} className="hover:underline">(New) Income Tax 2025-26</Link>
+                <Link href={ROUTES.SIP_DAILY} className="hover:underline">SIP (Daily)</Link>
               </li>
               <li>
-                <Link href={ROUTES.OLD_TAX_REGIME} className="hover:underline">(Old) Income Tax</Link>
+                <Link href={ROUTES.SIP_QUARTERLY} className="hover:underline">SIP (Quarterly)</Link>
               </li>
               <li>
-                <Link href={ROUTES.SALARY} className="hover:underline">Salary Calculator</Link>
-              </li>
-            </ul>
-          </div>
-          <div className="flex-1 min-w-[200px]">
-            <h3 className="text-2xl font-bold mb-4">Investment</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href={ROUTES.SIP} className="hover:underline">SIP Calculator</Link>
-              </li>
-            </ul>
-          </div>
-          <div className="flex-1 min-w-[200px]">
-            <h3 className="text-2xl font-bold mb-4">EMI</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link href={ROUTES.EMI_HOME_LOAN} className="hover:underline">Home Loan</Link>
-              </li>
-              <li>
-                <Link href={ROUTES.EMI_CAR_LOAN} className="hover:underline">Car Loan</Link>
-              </li>
-              <li>
-                <Link href={ROUTES.EMI_EDU_LOAN} className="hover:underline">Educational Loan</Link>
-              </li>
-              <li>
-                <Link href={ROUTES.EMI_PERSONAL_LOAN} className="hover:underline">Personal Loan</Link>
-              </li>
-              <li>
-                <Link href={ROUTES.EMI} className="hover:underline">EMI Loan</Link>
+                <Link href={ROUTES.SIP_YEARLY} className="hover:underline">SIP (Yearly)</Link>
               </li>
             </ul>
           </div>
@@ -60,12 +32,6 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link href={ROUTES.HOME} className="hover:underline">Home</Link>
-              </li>
-              <li>
-                <Link href={ROUTES.CONTACT} className="hover:underline">Contact</Link>
-              </li>
-              <li>
-                <Link href="https://docs.google.com/forms/d/e/1FAIpQLScv_SsrJtRdWPMtC3jfKUcu6KXZxAN9kgUUri1-ygCeM_PU6g/viewform" target="_blank" rel="noopener noreferrer" className="hover:underline">Feedback</Link>
               </li>
             </ul>
           </div>
