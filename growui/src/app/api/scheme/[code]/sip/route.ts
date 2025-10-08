@@ -1,5 +1,5 @@
 // src/app/api/scheme/[code]/sip/route.ts
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
@@ -142,11 +142,12 @@ function calculateSIP(navHistory: NavData[], amount: number, from: string, to: s
 
 
 // --- API Handler ---
-export async function POST(req: Request) {
+type RouteContext = { params: Promise<{ code: string }> };
+
+export async function POST(req: NextRequest, context: RouteContext) {
     try {
         const { amount, from, to } = await req.json();
-        const codeMatch = req.url.match(/\/scheme\/(\d+)\/sip/);
-        const code = codeMatch ? codeMatch[1] : null;
+        const { code } = await context.params;
 
         if (!code) return NextResponse.json({ error: "Missing scheme code." }, { status: 400 });
         if (!amount || !from || !to) return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
