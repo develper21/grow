@@ -1,14 +1,12 @@
 // src/app/api/scheme/[code]/route.ts
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getScheme } from "@/lib/api";
 
-interface Params {
-  params: { code: string };
-}
+type RouteContext = { params: Promise<{ code: string }> };
 
-export async function GET(req: Request, { params }: Params) {
+export async function GET(req: NextRequest, context: RouteContext) {
   try {
-    const { code } = params;
+    const { code } = await context.params;
     const scheme = await getScheme(code);
 
     // Transform NAV history: keep only date + nav as number
