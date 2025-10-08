@@ -8,11 +8,11 @@ export interface NAVEntry {
 
 // ✅ Mutual Fund Scheme metadata
 export interface Scheme {
-  code: string;          // Unique AMFI scheme code
-  name: string;          // Scheme name (e.g. SBI Bluechip Fund)
-  isin?: string;         // Optional ISIN (International Securities Identification Number)
-  category?: string;     // e.g. "Equity", "Debt", "Hybrid"
-  type?: string;         // e.g. "Open Ended", "Close Ended"
+  schemeCode: string;      // Unique AMFI scheme code from API
+  schemeName: string;      // Scheme name (e.g. SBI Bluechip Fund)
+  isin?: string;           // Optional ISIN (International Securities Identification Number)
+  category?: string;       // e.g. "Equity", "Debt", "Hybrid"
+  type?: string;           // e.g. "Open Ended", "Close Ended"
   navHistory?: NAVEntry[]; // Optional NAV history
 }
 
