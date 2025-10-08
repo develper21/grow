@@ -1,5 +1,5 @@
 // src/app/api/scheme/[code]/lumpsum/route.ts
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
@@ -89,11 +89,12 @@ function calculateLumpSum(navHistory: NavData[], amount: number, from: string, t
 }
 
 // --- API Handler ---
-export async function POST(req: Request) {
+type RouteContext = { params: Promise<{ code: string }> };
+
+export async function POST(req: NextRequest, context: RouteContext) {
     try {
         const { amount, from, to } = await req.json();
-        const codeMatch = req.url.match(/\/scheme\/(\d+)\/lumpsum/);
-        const code = codeMatch ? codeMatch[1] : null;
+        const { code } = await context.params;
 
         if (!code) return NextResponse.json({ error: "Missing scheme code." }, { status: 400 });
         if (!amount || !from || !to) return NextResponse.json({ error: "Missing required fields." }, { status: 400 });
