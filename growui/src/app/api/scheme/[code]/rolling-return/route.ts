@@ -1,5 +1,5 @@
 // src/app/api/scheme/[code]/rolling-return/route.ts
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
@@ -109,11 +109,12 @@ function calculateRollingReturns(navHistory: NavData[], periodInYears: number, f
 
 
 // --- API Handler ---
-export async function POST(req: Request) {
+type RouteContext = { params: Promise<{ code: string }> };
+
+export async function POST(req: NextRequest, context: RouteContext) {
     try {
         const { periodInYears } = await req.json();
-        const codeMatch = req.url.match(/\/scheme\/(\d+)\/rolling-return/);
-        const code = codeMatch ? codeMatch[1] : null;
+        const { code } = await context.params;
 
         if (!code) return NextResponse.json({ error: "Missing scheme code." }, { status: 400 });
         if (!periodInYears) return NextResponse.json({ error: "Missing `periodInYears`." }, { status: 400 });
