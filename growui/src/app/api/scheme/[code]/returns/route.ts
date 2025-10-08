@@ -1,11 +1,10 @@
 // src/app/api/scheme/[code]/returns/route.ts
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getScheme } from "@/lib/api";
 import { parseISO, differenceInDays } from "date-fns";
 
-interface Params {
-  params: { code: string };
-}
+// Next.js 15 app router passes context.params as a Promise
+type RouteContext = { params: Promise<{ code: string }> };
 
 function calculateReturns(navHistory: { date: string; nav: number }[], from: string, to: string) {
   const start = navHistory.find((d) => d.date === from) || navHistory[navHistory.length - 1];
@@ -23,9 +22,9 @@ function calculateReturns(navHistory: { date: string; nav: number }[], from: str
   return { startDate: from, endDate: to, startNAV, endNAV, simpleReturn, annualizedReturn };
 }
 
-export async function GET(req: Request, { params }: Params) {
+export async function GET(req: NextRequest, context: RouteContext) {
   try {
-    const { code } = params;
+    const { code } = await context.params;
     const url = new URL(req.url);
     const period = url.searchParams.get("period");
     const from = url.searchParams.get("from");
