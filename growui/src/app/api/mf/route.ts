@@ -6,9 +6,8 @@ let cacheTime = 0;
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const page = parseInt(url.searchParams.get("page") || "1");
-  const limit = parseInt(url.searchParams.get("limit") || "50"); // 50 funds per page
+  const limit = parseInt(url.searchParams.get("limit") || "50");
 
-  // Cache for 12 hours
   const now = Date.now();
   if (!cachedFunds.length || now - cacheTime > 12 * 60 * 60 * 1000) {
     const res = await fetch("https://api.mfapi.in/mf");
