@@ -1,4 +1,3 @@
-// src/app/api/scheme/[code]/rolling-return/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -16,33 +15,24 @@ interface NavData {
 }
 
 interface RollingReturnPoint {
-    date: string; // This will now be the START date of the period
+    date: string;
     value: number;
 }
 
-/**
- * Calculates the Compound Annual Growth Rate (CAGR).
- */
 function calculateCAGR(startValue: number, endValue: number, years: number): number {
     if (startValue <= 0 || years <= 0) return 0;
     return (Math.pow(endValue / startValue, 1 / years) - 1);
 }
 
-/**
- * Finds the first available NAV on or AFTER a given date.
- */
 function findNavForDate(sortedNavHistory: NavData[], targetDate: dayjs.Dayjs): NavData | null {
     for (const entry of sortedNavHistory) {
         if (entry.parsedDate.isSameOrAfter(targetDate, 'day')) {
             return entry;
         }
     }
-    return null; // Return null if no date is found
+    return null;
 }
 
-/**
- * Calculates rolling returns with the start date on the x-axis.
- */
 function calculateRollingReturns(navHistory: NavData[], periodInYears: number, fundLaunchDate: dayjs.Dayjs) {
     const sortedHistory = navHistory.sort((a, b) => a.parsedDate.unix() - b.parsedDate.unix());
 
@@ -52,14 +42,11 @@ function calculateRollingReturns(navHistory: NavData[], periodInYears: number, f
 
     const returnsData: RollingReturnPoint[] = [];
     const returnsValues: number[] = [];
-    
-    // The last possible day someone could start an investment and have it run for the full period.
     const lastPossibleStartDate = sortedHistory[sortedHistory.length - 1].parsedDate.subtract(periodInYears, 'year');
 
     for (const startEntry of sortedHistory) {
         const startDate = startEntry.parsedDate;
 
-        // Stop if the start date is too recent to form a full period
         if (startDate.isAfter(lastPossibleStartDate)) {
             break;
         }
@@ -70,8 +57,6 @@ function calculateRollingReturns(navHistory: NavData[], periodInYears: number, f
         if (endEntry) {
             const startNav = startEntry.nav;
             const endNav = endEntry.nav;
-
-            // Use the exact period in years for CAGR for accuracy
             const actualYears = endEntry.parsedDate.diff(startDate, 'year', true);
 
             if (actualYears > 0) {
@@ -93,7 +78,6 @@ function calculateRollingReturns(navHistory: NavData[], periodInYears: number, f
     const average = sum / returnsValues.length;
     const min = Math.min(...returnsValues);
     const max = Math.max(...returnsValues);
-
     const squareDiffs = returnsValues.map(value => Math.pow(value - average, 2));
     const avgSquareDiff = squareDiffs.reduce((a, b) => a + b, 0) / squareDiffs.length;
     const standardDeviation = Math.sqrt(avgSquareDiff);
@@ -108,7 +92,6 @@ function calculateRollingReturns(navHistory: NavData[], periodInYears: number, f
 }
 
 
-// --- API Handler ---
 type RouteContext = { params: Promise<{ code: string }> };
 
 export async function POST(req: NextRequest, context: RouteContext) {
@@ -125,9 +108,7 @@ export async function POST(req: NextRequest, context: RouteContext) {
         const data = await res.json();
         if (!data.data || data.data.length === 0) return NextResponse.json({ error: "No NAV history found." }, { status: 404 });
         
-        // --- IMPORTANT: Filter NAV data to start from the Direct Plan launch date ---
         const directPlanLaunchDate = dayjs("2013-01-01");
-
         const navHistory: NavData[] = data.data.map((entry: any) => ({
             date: entry.date,
             nav: parseFloat(entry.nav),

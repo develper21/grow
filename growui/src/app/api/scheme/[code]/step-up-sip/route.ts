@@ -1,4 +1,3 @@
-// src/app/api/scheme/[code]/step-up-sip/route.ts
 import { NextResponse } from "next/server";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -9,7 +8,6 @@ dayjs.extend(customParseFormat);
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 
-// --- TYPE DEFINITIONS ---
 interface NavData {
     date: string;
     nav: number;
@@ -21,9 +19,7 @@ interface Cashflow {
     date: dayjs.Dayjs;
 }
 
-/**
- * Calculates XIRR for accurate annualized returns.
- */
+
 function calculateXIRR(cashflows: Cashflow[]): number {
     if (cashflows.length < 2) return 0;
     const maxIterations = 100;
@@ -51,9 +47,7 @@ function calculateXIRR(cashflows: Cashflow[]): number {
     return 0;
 }
 
-/**
- * Finds the first available NAV on or AFTER a given date.
- */
+
 function findNavForDate(sortedNavHistory: NavData[], targetDate: dayjs.Dayjs): NavData | null {
     for (const entry of sortedNavHistory) {
         if (entry.parsedDate.isSameOrAfter(targetDate, 'day')) {
@@ -63,9 +57,6 @@ function findNavForDate(sortedNavHistory: NavData[], targetDate: dayjs.Dayjs): N
     return sortedNavHistory.length > 0 ? sortedNavHistory[sortedNavHistory.length - 1] : null;
 }
 
-/**
- * Calculates Step-up SIP returns.
- */
 function calculateStepUpSIP(
     navHistory: NavData[],
     initialAmount: number,
@@ -100,7 +91,6 @@ function calculateStepUpSIP(
         const currentDate = navEntry.parsedDate;
 
         while (nextSipDate.isSameOrBefore(currentDate, 'day') && nextSipDate.isBefore(endDate, 'day')) {
-            // Check if it's time to step up the SIP amount
             if (nextSipDate.isSameOrAfter(nextStepUpDate, 'day')) {
                 currentSipAmount *= (1 + stepUpPercentage / 100);
                 nextStepUpDate = nextStepUpDate.add(1, 'year');
@@ -146,7 +136,6 @@ function calculateStepUpSIP(
 }
 
 
-// --- API Handler ---
 export async function POST(req: Request) {
     try {
         const { initialAmount, from, to, stepUpPercentage } = await req.json();

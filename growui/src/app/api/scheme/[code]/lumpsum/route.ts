@@ -1,4 +1,3 @@
-// src/app/api/scheme/[code]/lumpsum/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -15,9 +14,6 @@ interface NavData {
     parsedDate: dayjs.Dayjs;
 }
 
-/**
- * Finds the first available NAV on or AFTER a given date.
- */
 function findNavForDate(sortedNavHistory: NavData[], targetDate: dayjs.Dayjs): NavData | null {
     for (const entry of sortedNavHistory) {
         if (entry.parsedDate.isSameOrAfter(targetDate, 'day')) {
@@ -27,9 +23,6 @@ function findNavForDate(sortedNavHistory: NavData[], targetDate: dayjs.Dayjs): N
     return sortedNavHistory.length > 0 ? sortedNavHistory[sortedNavHistory.length - 1] : null;
 }
 
-/**
- * Calculates lumpsum investment returns.
- */
 function calculateLumpSum(navHistory: NavData[], amount: number, from: string, to: string) {
     const sortedHistory = navHistory.sort((a, b) => a.parsedDate.unix() - b.parsedDate.unix());
 
@@ -88,7 +81,6 @@ function calculateLumpSum(navHistory: NavData[], amount: number, from: string, t
     };
 }
 
-// --- API Handler ---
 type RouteContext = { params: Promise<{ code: string }> };
 
 export async function POST(req: NextRequest, context: RouteContext) {

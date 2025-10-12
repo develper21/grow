@@ -1,4 +1,3 @@
-// src/app/api/scheme/[code]/step-up-swp/route.ts
 import { NextResponse } from "next/server";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -15,9 +14,6 @@ interface NavData {
     parsedDate: dayjs.Dayjs;
 }
 
-/**
- * Finds the first available NAV on or AFTER a given date.
- */
 function findNavForDate(sortedNavHistory: NavData[], targetDate: dayjs.Dayjs): NavData | null {
     for (const entry of sortedNavHistory) {
         if (entry.parsedDate.isSameOrAfter(targetDate, 'day')) {
@@ -27,9 +23,6 @@ function findNavForDate(sortedNavHistory: NavData[], targetDate: dayjs.Dayjs): N
     return sortedNavHistory.length > 0 ? sortedNavHistory[sortedNavHistory.length - 1] : null;
 }
 
-/**
- * Calculates historical Step-up SWP performance.
- */
 function calculateStepUpSWP(
     navHistory: NavData[],
     initialInvestment: number,
@@ -64,7 +57,6 @@ function calculateStepUpSWP(
     let corpusRanOutDate: string | null = null;
 
     while (withdrawalDate.isSameOrBefore(endDate)) {
-        // Check if it's time to increase the withdrawal amount
         if (withdrawalDate.isSameOrAfter(nextStepUpDate, 'day')) {
             currentMonthlyWithdrawal *= (1 + stepUpPercentage / 100);
             nextStepUpDate = nextStepUpDate.add(1, 'year');

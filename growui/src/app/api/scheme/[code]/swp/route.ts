@@ -1,4 +1,3 @@
-// src/app/api/scheme/[code]/swp/route.ts
 import { NextResponse } from "next/server";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -15,9 +14,6 @@ interface NavData {
     parsedDate: dayjs.Dayjs;
 }
 
-/**
- * Finds the first available NAV on or AFTER a given date.
- */
 function findNavForDate(sortedNavHistory: NavData[], targetDate: dayjs.Dayjs): NavData | null {
     for (const entry of sortedNavHistory) {
         if (entry.parsedDate.isSameOrAfter(targetDate, 'day')) {
@@ -27,9 +23,6 @@ function findNavForDate(sortedNavHistory: NavData[], targetDate: dayjs.Dayjs): N
     return sortedNavHistory.length > 0 ? sortedNavHistory[sortedNavHistory.length - 1] : null;
 }
 
-/**
- * Calculates historical SWP performance against actual NAV data.
- */
 function calculateHistoricalSWP(
     navHistory: NavData[],
     initialInvestment: number,
@@ -46,7 +39,6 @@ function calculateHistoricalSWP(
     const startDate = dayjs(from);
     const endDate = dayjs(to);
 
-    // Find the NAV for the initial investment
     const startNavEntry = findNavForDate(sortedHistory, startDate);
     if (!startNavEntry) {
         throw new Error("Could not find a valid starting NAV for the selected investment date.");
@@ -56,7 +48,6 @@ function calculateHistoricalSWP(
     let totalWithdrawn = 0;
     const growthOverTime: { date: string, value: number }[] = [];
     
-    // Add the starting point to the chart
     growthOverTime.push({ date: startDate.format('YYYY-MM-DD'), value: initialInvestment });
 
     let withdrawalDate = startDate.add(1, 'month');
@@ -70,7 +61,6 @@ function calculateHistoricalSWP(
             const unitsToSell = monthlyWithdrawal / navEntry.nav;
 
             if (currentValue < monthlyWithdrawal) {
-                // Not enough value to sustain the withdrawal, corpus is depleted
                 totalWithdrawn += currentValue;
                 currentUnits = 0;
                 corpusRanOutDate = withdrawalDate.format('YYYY-MM-DD');

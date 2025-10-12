@@ -1,9 +1,7 @@
-// src/app/api/scheme/[code]/returns/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { getScheme } from "@/lib/api";
 import { parseISO, differenceInDays } from "date-fns";
 
-// Next.js 15 app router passes context.params as a Promise
 type RouteContext = { params: Promise<{ code: string }> };
 
 function calculateReturns(navHistory: { date: string; nav: number }[], from: string, to: string) {

@@ -1,4 +1,3 @@
-// src/app/api/scheme/[code]/sip/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
@@ -9,7 +8,6 @@ dayjs.extend(customParseFormat);
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
 
-// --- TYPE DEFINITIONS ---
 interface NavData {
     date: string;
     nav: number;
@@ -21,9 +19,6 @@ interface Cashflow {
     date: dayjs.Dayjs;
 }
 
-/**
- * Calculates XIRR for accurate annualized returns.
- */
 function calculateXIRR(cashflows: Cashflow[]): number {
     if (cashflows.length < 2) return 0;
 
@@ -40,13 +35,13 @@ function calculateXIRR(cashflows: Cashflow[]): number {
             const days = cf.date.diff(firstDate, 'day');
             const exponent = days / 365.0;
             npv += cf.amount / Math.pow(1 + guess, exponent);
-            if (guess > -1) { // Avoid issues with negative guess
+            if (guess > -1) {
                 derivative += -exponent * cf.amount / Math.pow(1 + guess, exponent + 1);
             }
         }
 
         if (Math.abs(npv) < tolerance) {
-            return guess; // Return as a factor
+            return guess;
         }
 
         if (derivative === 0) break;
@@ -56,9 +51,6 @@ function calculateXIRR(cashflows: Cashflow[]): number {
     return 0;
 }
 
-/**
- * Finds the first available NAV on or AFTER a given date.
- */
 function findNavForDate(sortedNavHistory: NavData[], targetDate: dayjs.Dayjs): NavData | null {
     for (const entry of sortedNavHistory) {
         if (entry.parsedDate.isSameOrAfter(targetDate, 'day')) {
@@ -68,9 +60,6 @@ function findNavForDate(sortedNavHistory: NavData[], targetDate: dayjs.Dayjs): N
     return sortedNavHistory.length > 0 ? sortedNavHistory[sortedNavHistory.length - 1] : null;
 }
 
-/**
- * Calculates SIP returns with precision for charting.
- */
 function calculateSIP(navHistory: NavData[], amount: number, from: string, to: string) {
     const sortedHistory = navHistory.sort((a, b) => a.parsedDate.unix() - b.parsedDate.unix());
 
@@ -98,7 +87,6 @@ function calculateSIP(navHistory: NavData[], amount: number, from: string, to: s
     for (const navEntry of relevantNavHistory) {
         const currentDate = navEntry.parsedDate;
 
-        // **THE FIX IS HERE**: Changed isSameOrBefore to isBefore to exclude the end date from new investments
         while (nextSipDate.isSameOrBefore(currentDate, 'day') && nextSipDate.isBefore(endDate, 'day')) {
             const sipNavEntry = findNavForDate(sortedHistory, nextSipDate);
             if (sipNavEntry) {
@@ -123,7 +111,6 @@ function calculateSIP(navHistory: NavData[], amount: number, from: string, to: s
         return { totalInvested: 0, currentValue: 0, absoluteReturn: 0, annualizedReturn: 0, growthOverTime: [] };
     }
     
-    // Ensure final valuation cashflow is added for XIRR
     if (investments.length > 0) {
         investments.push({ amount: finalValue, date: endDate });
     }
@@ -141,7 +128,6 @@ function calculateSIP(navHistory: NavData[], amount: number, from: string, to: s
 }
 
 
-// --- API Handler ---
 type RouteContext = { params: Promise<{ code: string }> };
 
 export async function POST(req: NextRequest, context: RouteContext) {

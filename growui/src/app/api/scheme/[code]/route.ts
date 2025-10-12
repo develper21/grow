@@ -1,4 +1,3 @@
-// src/app/api/scheme/[code]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { getScheme } from "@/lib/api";
 
@@ -9,7 +8,6 @@ export async function GET(req: NextRequest, context: RouteContext) {
     const { code } = await context.params;
     const scheme = await getScheme(code);
 
-    // Transform NAV history: keep only date + nav as number
     const navHistory = scheme.data.map((d: any) => ({
       date: d.date,
       nav: parseFloat(d.nav),
