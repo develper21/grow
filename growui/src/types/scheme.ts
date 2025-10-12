@@ -1,22 +1,17 @@
-// src/types/scheme.ts
-
-// ✅ NAV entry (daily price)
 export interface NAVEntry {
-  date: string;   // e.g. "2025-09-25"
-  nav: number;    // NAV value
+  date: string;
+  nav: number;
 }
 
-// ✅ Mutual Fund Scheme metadata
 export interface Scheme {
-  schemeCode: string;      // Unique AMFI scheme code from API
-  schemeName: string;      // Scheme name (e.g. SBI Bluechip Fund)
-  isin?: string;           // Optional ISIN (International Securities Identification Number)
-  category?: string;       // e.g. "Equity", "Debt", "Hybrid"
-  type?: string;           // e.g. "Open Ended", "Close Ended"
-  navHistory?: NAVEntry[]; // Optional NAV history
+  schemeCode: string;      
+  schemeName: string;      
+  isin?: string;          
+  category?: string;       
+  type?: string;          
+  navHistory?: NAVEntry[];
 }
 
-// ✅ Returns (absolute % for given time periods)
 export interface Returns {
   oneMonth: number;
   threeMonths: number;
@@ -24,20 +19,18 @@ export interface Returns {
   oneYear: number;
   threeYears?: number;
   fiveYears?: number;
-  cagr?: number; // CAGR if available
+  cagr?: number;
 }
 
-// ✅ SIP Calculation input
 export interface SIPInput {
-  amount: number;      // Monthly investment
-  duration: number;    // In months
-  expectedRate: number; // Annual return in %
+  amount: number;     
+  duration: number;   
+  expectedRate: number; 
 }
 
-// ✅ SIP Calculation result
 export interface SIPResult {
-  investedAmount: number;  // Total money invested
-  currentValue: number;    // Value at end of SIP
-  wealthGain: number;      // Profit earned
-  xirr?: number;           // Approximate XIRR %
+  investedAmount: number;  
+  currentValue: number;    
+  wealthGain: number;      
+  xirr?: number;           
 }
