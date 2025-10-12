@@ -1,9 +1,7 @@
-// src/lib/swpCalculator.ts
-
 export interface SWPInput {
     totalInvestment: number;
     monthlyWithdrawal: number;
-    annualReturnRate: number; // As a percentage, e.g., 12 for 12%
+    annualReturnRate: number;
     durationInYears: number;
   }
   
@@ -22,11 +20,6 @@ export interface SWPInput {
     breakdown: SWPYearlyBreakdown[];
   }
   
-  /**
-   * Calculates the outcome of a Systematic Withdrawal Plan (SWP).
-   * @param input - The SWP parameters.
-   * @returns The calculated results including yearly breakdown.
-   */
   export function calculateSWP(input: SWPInput): SWPResult {
     const { totalInvestment, monthlyWithdrawal, annualReturnRate, durationInYears } = input;
   
@@ -47,12 +40,10 @@ export interface SWPInput {
         interestThisYear += interestEarned;
         currentBalance += interestEarned;
         
-        // Ensure we don't withdraw more than the available balance
         const actualWithdrawal = Math.min(currentBalance, monthlyWithdrawal);
         currentBalance -= actualWithdrawal;
         withdrawalThisYear += actualWithdrawal;
   
-        // Stop if the balance is depleted
         if (currentBalance <= 0) break;
       }
   

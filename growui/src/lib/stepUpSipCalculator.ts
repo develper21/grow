@@ -1,4 +1,3 @@
-// src/lib/stepUpSipCalculator.ts
 import dayjs, { Dayjs } from "dayjs";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 
