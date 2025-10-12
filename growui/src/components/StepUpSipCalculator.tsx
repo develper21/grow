@@ -1,4 +1,3 @@
-// src/components/StepUpSipCalculator.tsx
 "use client";
 
 import { useState } from "react";
@@ -10,10 +9,8 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianG
 import CalculateIcon from '@mui/icons-material/Calculate';
 import dayjs from "dayjs";
 
-// Utility functions
 const formatCurrency = (val: number) => `₹${val.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 const formatPercent = (val: number) => `${val.toFixed(2)}%`;
-
 const CustomTooltip = ({ active, payload, label }: any) => {
     const theme = useTheme();
     if (active && payload && payload.length) {

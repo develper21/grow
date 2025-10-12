@@ -1,4 +1,3 @@
-// src/components/StepUpSwpCalculator.tsx
 "use client";
 
 import { useState } from "react";

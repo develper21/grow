@@ -1,4 +1,3 @@
-// src/components/RollingReturnCalculator.tsx
 "use client";
 
 import { useState } from "react";
@@ -11,7 +10,6 @@ import CalculateIcon from '@mui/icons-material/Calculate';
 import dayjs from "dayjs";
 
 const formatPercent = (val: number) => `${val.toFixed(2)}%`;
-
 const CustomTooltip = ({ active, payload, label, periodInYears }: any) => {
     const theme = useTheme();
     if (active && payload && payload.length) {

@@ -1,4 +1,3 @@
-// src/components/LumpSumCalculator.tsx
 "use client";
 
 import { useState } from "react";
@@ -11,10 +10,8 @@ import CalculateIcon from '@mui/icons-material/Calculate';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import dayjs from "dayjs";
 
-// Utility functions
 const formatCurrency = (val: number) => `₹${val.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 const formatPercent = (val: number) => `${val.toFixed(2)}%`;
-
 const CustomTooltip = ({ active, payload, label }: any) => {
     const theme = useTheme();
     if (active && payload && payload.length) {

@@ -1,4 +1,3 @@
-// src/components/FundListItem.tsx
 "use client";
 
 import {
@@ -13,14 +12,12 @@ import {
 import Link from "next/link";
 import { Scheme } from "@/types/scheme";
 
-// Helper to get a color based on return value
 const getReturnColor = (returnValue: string, theme: any) => {
   const num = parseFloat(returnValue);
   if (isNaN(num)) return theme.palette.text.secondary;
   return num > 0 ? theme.palette.success.main : theme.palette.error.main;
 };
 
-// A small component for displaying return values
 const ReturnValue = ({ value }: { value: string }) => {
   const theme = useTheme();
   const color = getReturnColor(value, theme);
@@ -31,16 +28,13 @@ const ReturnValue = ({ value }: { value: string }) => {
   );
 };
 
-// The component now renders a TableRow
 export default function FundListItem({ fund }: { fund: Scheme }) {
   const theme = useTheme();
 
-  // --- PLACEHOLDER DATA ---
   const latestNav = (Math.random() * 200 + 20).toFixed(2);
   const oneYearReturn = (Math.random() * 60 - 10).toFixed(2);
   const threeYearReturn = (Math.random() * 25 + 5).toFixed(2);
   const cagr = (parseFloat(threeYearReturn) - 2).toFixed(2);
-  // --- END PLACEHOLDER ---
 
   let category = "Equity";
   const lowerCaseName = fund.schemeName.toLowerCase();
@@ -63,7 +57,6 @@ export default function FundListItem({ fund }: { fund: Scheme }) {
         },
       }}
     >
-      {/* Name and Category Cell */}
       <TableCell>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Avatar
@@ -99,24 +92,20 @@ export default function FundListItem({ fund }: { fund: Scheme }) {
         </Box>
       </TableCell>
 
-      {/* NAV Cell */}
       <TableCell align="right">
         <Typography variant="body2" fontWeight={500}>
           ₹{latestNav}
         </Typography>
       </TableCell>
 
-      {/* 1Y Return Cell */}
       <TableCell align="right">
         <ReturnValue value={oneYearReturn} />
       </TableCell>
 
-      {/* 3Y Return Cell */}
       <TableCell align="right">
         <ReturnValue value={threeYearReturn} />
       </TableCell>
 
-      {/* CAGR Cell */}
       <TableCell align="right">
         <ReturnValue value={cagr} />
       </TableCell>

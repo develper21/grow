@@ -1,4 +1,3 @@
-// src/components/SchemeHeader.tsx
 "use client";
 
 import { useMemo } from "react";
@@ -10,7 +9,6 @@ import { calculateCAGR } from "@/lib/utils";
 
 dayjs.extend(customParseFormat);
 
-// --- TYPE DEFINITIONS ---
 interface NavEntry {
   date: string;
   nav: number;
@@ -21,7 +19,6 @@ interface SchemeHeaderProps {
   navHistory: NavEntry[];
 }
 
-// --- MAIN COMPONENT ---
 export default function SchemeHeader({ meta, navHistory }: SchemeHeaderProps) {
   const theme = useTheme();
 
@@ -88,7 +85,6 @@ export default function SchemeHeader({ meta, navHistory }: SchemeHeaderProps) {
 
       <Divider sx={{ my: 3 }} />
 
-      {/* Metrics Stack */}
       <Stack
         direction="row"
         divider={<Divider orientation="vertical" flexItem />}
@@ -132,7 +128,6 @@ export default function SchemeHeader({ meta, navHistory }: SchemeHeaderProps) {
         )}
       </Stack>
        
-       {/* About Fund Section */}
        <Box sx={{ mt: 3, pt: 3, borderTop: `1px solid ${theme.palette.divider}` }}>
         <Typography variant="h6" fontWeight="600" gutterBottom>About {meta.schemeName}</Typography>
         <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.7 }}>

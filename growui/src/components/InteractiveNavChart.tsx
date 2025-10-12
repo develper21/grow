@@ -1,4 +1,3 @@
-// src/components/InteractiveNavChart.tsx
 "use client";
 
 import { useState, useMemo } from "react";
@@ -30,23 +29,14 @@ import {
   ReferenceLine,
 } from "recharts";
 
-// Extend dayjs to handle the "DD-MM-YYYY" format from the API
 dayjs.extend(customParseFormat);
 
-// --- TYPE DEFINITIONS ---
 interface NavDataPoint {
-  date: string; // The raw date string from the API
+  date: string;
   nav: number;
 }
 
-// --- CONSTANTS ---
 const TIME_RANGES = ["1D", "1W", "1M", "3M", "6M", "1Y", "3Y", "5Y", "Max"];
-
-// --- HELPER COMPONENTS ---
-
-/**
- * A custom tooltip for a better visual experience on hover.
- */
 const CustomTooltip = ({ active, payload, label }: any) => {
   const theme = useTheme();
   if (active && payload && payload.length) {
@@ -73,9 +63,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-/**
- * The core chart rendering component. It's responsive for the dialog and fixed for the main page.
- */
+
 const ChartRenderer = ({ data, theme, isFullScreen = false }: { data: any[], theme: any, isFullScreen?: boolean }) => {
   if (data.length === 0) {
     return (
@@ -92,7 +80,6 @@ const ChartRenderer = ({ data, theme, isFullScreen = false }: { data: any[], the
 
   const chart = (
     <LineChart
-      // Apply fixed width and height only when NOT in fullscreen
       width={isFullScreen ? undefined : 1000}
       height={isFullScreen ? undefined : 350}
       data={data}
@@ -118,7 +105,7 @@ const ChartRenderer = ({ data, theme, isFullScreen = false }: { data: any[], the
       <Line
         type="monotone"
         dataKey="nav"
-        stroke={theme.palette.warning.main} // Orange color
+        stroke={theme.palette.warning.main}
         strokeWidth={2.5}
         dot={false}
         activeDot={{ r: 6 }}
@@ -132,16 +119,12 @@ const ChartRenderer = ({ data, theme, isFullScreen = false }: { data: any[], the
     </LineChart>
   );
   
-  // Use ResponsiveContainer only for the fullscreen dialog
   if(isFullScreen){
     return <ResponsiveContainer width="100%" height="100%">{chart}</ResponsiveContainer>
   }
-
-  // Return the fixed-size chart for the normal view
   return chart;
 };
 
-// --- MAIN CHART COMPONENT ---
 
 export default function InteractiveNavChart({ data, schemeName }: { data: NavDataPoint[], schemeName?: string }) {
   const theme = useTheme();
@@ -217,12 +200,10 @@ export default function InteractiveNavChart({ data, schemeName }: { data: NavDat
       
       {ChartControls}
 
-      {/* Wrapper for the normal chart to allow horizontal scrolling */}
       <Box sx={{ width: '100%', overflowX: 'auto' }}>
           <ChartRenderer data={chartData} theme={theme} isFullScreen={false} />
       </Box>
 
-      {/* Fullscreen Dialog */}
       <Dialog
         open={isDialogOpen}
         onClose={() => setDialogOpen(false)}

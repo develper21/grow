@@ -1,4 +1,4 @@
-"use client"; // Mark this as a Client Component
+"use client";
 
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
 import Link from "next/link";
@@ -8,7 +8,7 @@ export default function Navbar() {
     <AppBar position="static">
       <Toolbar>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
-          Mutual Fund Explorer
+          GrowwExplorer
         </Typography>
 
         <Box sx={{ display: "flex", gap: 2 }}>
@@ -16,7 +16,6 @@ export default function Navbar() {
             Funds
           </Button>
 
-          {/* Example: You can add more routes */}
           <Button color="inherit" component={Link} href="/scheme/118834">
             Sample Scheme
           </Button>

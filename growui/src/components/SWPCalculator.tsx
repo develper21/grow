@@ -1,4 +1,3 @@
-// src/components/SWPCalculator.tsx
 "use client";
 
 import { useState } from "react";
@@ -70,7 +69,6 @@ export default function SWPCalculator({ code }: { code: string }) {
                 Historical SWP Calculator
             </Typography>
 
-            {/* Input Section */}
             <Paper elevation={1} sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3, mb: 4, backgroundColor: alpha(theme.palette.background.paper, 0.9) }}>
                 <Stack spacing={3}>
                     <TextField
@@ -115,10 +113,8 @@ export default function SWPCalculator({ code }: { code: string }) {
                 </Stack>
             </Paper>
 
-            {/* Error */}
             {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
 
-            {/* Result Section */}
             {result && (
                 <Box>
                     <Divider sx={{ my: 3 }} />
