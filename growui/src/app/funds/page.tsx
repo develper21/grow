@@ -1,4 +1,3 @@
-// src/app/funds/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -17,7 +16,6 @@ import {
   TableCell,
   TableBody,
 } from "@mui/material";
-// We import the component which now acts as a table row
 import FundListItem from "@/components/FundListItem";
 import { Scheme } from "@/types/scheme";
 
@@ -27,7 +25,6 @@ export default function FundsPage() {
   const [page, setPage] = useState(1);
   const [allFunds, setAllFunds] = useState<Scheme[]>([]);
 
-  // Fetch all funds once and store them for client-side operations
   useEffect(() => {
     async function fetchAllFunds() {
       setLoading(true);
@@ -45,7 +42,7 @@ export default function FundsPage() {
     fetchAllFunds();
   }, []);
 
-  const limit = 50; // Items per page
+  const limit = 50;
 
   const filteredFunds = allFunds.filter((fund) =>
     fund.schemeName.toLowerCase().includes(search.toLowerCase())
@@ -62,7 +59,6 @@ export default function FundsPage() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
   
-  // Reset page to 1 whenever the search query changes
   useEffect(() => {
     if (page !== 1) setPage(1);
   }, [search]);
@@ -71,7 +67,7 @@ export default function FundsPage() {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Typography variant="h4" fontWeight={700} gutterBottom>
-        Mutual Fund Explorer
+        Grow
       </Typography>
 
       <TextField
@@ -88,7 +84,7 @@ export default function FundsPage() {
           <CircularProgress />
         </Box>
       ) : (
-        <Paper variant="outlined" sx={{ borderRadius: 2 }}>
+        <Paper variant="outlined">
           <TableContainer>
             <Table>
               <TableHead>
@@ -103,14 +99,12 @@ export default function FundsPage() {
               <TableBody>
                 {paginatedFunds.length > 0 ? (
                   paginatedFunds.map((fund) => (
-                    // Our FundListItem now works perfectly as a TableRow
                     <FundListItem fund={fund} key={fund.schemeCode} />
                   ))
                 ) : (
                   <TableRow>
                     <TableCell colSpan={5} align="center">
                       <Typography color="text.secondary" sx={{ p: 6 }}>
-                        No funds match your search.
                       </Typography>
                     </TableCell>
                   </TableRow>
