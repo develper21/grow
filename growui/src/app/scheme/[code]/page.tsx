@@ -1,4 +1,3 @@
-// src/app/scheme/[code]/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -13,7 +12,6 @@ import {
   useTheme,
 } from "@mui/material";
 
-// Import all the custom components
 import InteractiveNavChart from "@/components/InteractiveNavChart";
 import ReturnsTable from "@/components/ReturnsTable";
 import SIPCalculator from "@/components/SIPCalculator";
@@ -23,7 +21,7 @@ import LumpSumCalculator from "@/components/LumpSumCalculator";
 import RollingReturnCalculator from "@/components/RollingReturnCalculator";
 import SWPCalculator from "@/components/SWPCalculator";
 import StepUpSipCalculator from "@/components/StepUpSipCalculator";
-import StepUpSwpCalculator from "@/components/StepUpSwpCalculator"; // 1. Import the new component
+import StepUpSwpCalculator from "@/components/StepUpSwpCalculator";
 
 export default function SchemeDetailPage() {
   const { code } = useParams();
