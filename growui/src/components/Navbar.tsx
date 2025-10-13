@@ -1,105 +1,191 @@
 "use client";
-
 import React from "react";
-import Link from "next/link";
-import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
-import { styled, keyframes } from "@mui/system";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  IconButton,
+  Button,
+  useTheme,
+  useMediaQuery,
+  Drawer,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import { useRouter } from "next/router";
 
-const shine = keyframes`
-  0% { background-position: -150% 0; }
-  100% { background-position: 150% 0; }
-`;
+interface NavbarProps {
+  navItems?: Array<{ label: string; path: string }>;
+}
 
-const TypoAppBar = styled(AppBar)(({ theme }) => ({
-  background: "#0f1724",
-  borderBottom: "1px solid rgba(255,255,255,0.05)",
-  color: "#e6eef8",
-  backdropFilter: "blur(8px)",
-  boxShadow: "0 4px 20px rgba(0,0,0,0.25)",
-}));
+export default function Navbar({ navItems = [
+  { label: "Home", path: "/" },
+  { label: "Explore Funds", path: "/funds" },
+  { label: "Watchlist", path: "/watchlist" },
+  { label: "Virtual Portfolio", path: "/virtual_portfolio" },
+] }: NavbarProps) {
+  const router = useRouter();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
 
-export default function Navbar() {
+  const handleNavigation = (path: string) => {
+    router.push(path);
+    setDrawerOpen(false);
+  };
+
   return (
-    <TypoAppBar position="static" color="default" elevation={0}>
-      <Toolbar sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-        <Box>
-          <Typography
-            variant="h5"
+    <>
+      <AppBar
+        position="sticky"
+        elevation={0}
+        sx={{
+          background: "rgba(255, 255, 255, 0.95)",
+          backdropFilter: "blur(20px)",
+          borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
+          color: "text.primary",
+        }}
+      >
+        <Toolbar sx={{ py: 1 }}>
+          <TrendingUpIcon
             sx={{
-              fontFamily: "'Playfair Display', serif",
+              mr: 1.5,
+              fontSize: 32,
+              color: "primary.main",
+            }}
+          />
+
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{
+              flexGrow: 1,
               fontWeight: 700,
-              lineHeight: 1.05,
-              letterSpacing: 0.3,
-              backgroundImage:
-                "linear-gradient(90deg, rgba(255,255,255,0.95), rgba(120,200,255,0.9), rgba(255,255,255,0.95))",
-              backgroundSize: "200% 100%",
-              WebkitBackgroundClip: "text",
-              backgroundClip: "text",
-              color: "transparent",
-              animation: `${shine} 4s linear infinite`,
+              letterSpacing: 0.5,
+              color: "text.primary",
+              cursor: "pointer",
+              fontSize: "1.5rem",
             }}
+            onClick={() => handleNavigation("/")}
           >
-            GrowwExplorer
+            Grow
           </Typography>
-          <Typography
-            variant="caption"
-            sx={{
-              fontFamily: "'Inter', sans-serif",
-              opacity: 0.75,
-              fontSize: "0.8rem",
-            }}
-          >
-            Curated funds & analysis
-          </Typography>
-        </Box>
-        <Box sx={{ flexGrow: 1 }} />
-        <Box sx={{ display: "flex", gap: 1 }}>
-          {[
-            { href: "/funds", label: "Funds" },
-            { href: "/scheme/118834", label: "Sample Scheme" },
-            { href: "/", label: "Home" },
-          ].map((item) => (
-            <Button
-              key={item.href}
-              component={Link}
-              href={item.href}
+
+          {isMobile ? (
+            <IconButton
+              edge="end"
+              onClick={() => setDrawerOpen(true)}
               sx={{
-                textTransform: "none",
-                fontFamily: "'Inter', sans-serif",
-                fontWeight: 600,
-                letterSpacing: 0.2,
-                color: "rgba(230,238,248,0.95)",
-                position: "relative",
-                px: 1.5,
+                color: "text.primary",
                 "&:hover": {
-                  transform: "translateY(-3px) scale(1.02)",
-                  transition: "transform 300ms ease",
-                },
-                "&:after": {
-                  content: '""',
-                  position: "absolute",
-                  left: 0,
-                  bottom: 2,
-                  width: "100%",
-                  height: 2,
-                  borderRadius: 2,
-                  transform: "translateY(8px)",
-                  background:
-                    "linear-gradient(90deg, rgba(120,200,255,0.9), rgba(200,120,255,0.85))",
-                  opacity: 0,
-                  transition: "opacity 300ms, transform 350ms",
-                },
-                "&:hover:after": {
-                  opacity: 1,
-                  transform: "translateY(0px)",
-                },
+                  backgroundColor: "rgba(0, 0, 0, 0.04)",
+                }
               }}
             >
-              <span style={{ fontSize: 13 }}>{item.label}</span>
-            </Button>
-          ))}
+              <MenuIcon />
+            </IconButton>
+          ) : (
+            <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+              {navItems.map((item) => (
+                <Button
+                  key={item.path}
+                  onClick={() => handleNavigation(item.path)}
+                  sx={{
+                    position: "relative",
+                    fontWeight: router.pathname === item.path ? 600 : 500,
+                    color: router.pathname === item.path ? "primary.main" : "text.primary",
+                    transition: "all 0.3s ease",
+                    px: 2,
+                    py: 1,
+                    borderRadius: 2,
+                    "&:before": {
+                      content: '""',
+                      position: "absolute",
+                      width: "100%",
+                      height: "2px",
+                      bottom: 8,
+                      left: 0,
+                      background: "linear-gradient(90deg, #1976d2, #42a5f5)",
+                      transform: "scaleX(0)",
+                      transformOrigin: "right",
+                      transition: "transform 0.3s ease",
+                    },
+                    "&:hover:before": {
+                      transform: "scaleX(1)",
+                      transformOrigin: "left",
+                    },
+                    "&:hover": {
+                      backgroundColor: "rgba(25, 118, 210, 0.08)",
+                      transform: "translateY(-1px)",
+                    },
+                  }}
+                >
+                  {item.label}
+                </Button>
+              ))}
+            </Box>
+          )}
+        </Toolbar>
+      </AppBar>
+
+      {/* Mobile Drawer */}
+      <Drawer
+        anchor="right"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        PaperProps={{
+          sx: {
+            width: 280,
+            background: "linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)",
+            borderRadius: "16px 0 0 16px",
+          },
+        }}
+      >
+        <Box sx={{ p: 2 }}>
+          <Typography variant="h6" sx={{ mb: 3, textAlign: "center", fontWeight: 700 }}>
+            Navigation
+          </Typography>
+          <List>
+            {navItems.map((item) => (
+              <ListItem key={item.path} disablePadding sx={{ mb: 1 }}>
+                <ListItemButton
+                  onClick={() => handleNavigation(item.path)}
+                  selected={router.pathname === item.path}
+                  sx={{
+                    borderRadius: 2,
+                    "&.Mui-selected": {
+                      background: "linear-gradient(90deg, #1976d2 0%, #42a5f5 100%)",
+                      color: "white",
+                      "&:hover": {
+                        background: "linear-gradient(90deg, #1565c0 0%, #1976d2 100%)",
+                      },
+                    },
+                    "&:hover": {
+                      backgroundColor: "rgba(25, 118, 210, 0.08)",
+                    },
+                  }}
+                >
+                  <ListItemText
+                    primary={item.label}
+                    sx={{
+                      textAlign: "center",
+                      fontWeight: router.pathname === item.path ? 600 : 500,
+                      "& .MuiListItemText-primary": {
+                        fontSize: "1rem",
+                      }
+                    }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
         </Box>
-      </Toolbar>
-    </TypoAppBar>
+      </Drawer>
+    </>
   );
 }

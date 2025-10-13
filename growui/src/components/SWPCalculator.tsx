@@ -1,167 +1,236 @@
-"use client";
-
-import { useState } from "react";
+import React, { useState } from 'react';
 import {
-    TextField, Button, Typography, Stack, Divider, Box, useTheme,
-    Paper, InputAdornment, CircularProgress, alpha, Alert,
-} from "@mui/material";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import CalculateIcon from '@mui/icons-material/Calculate';
-import dayjs from "dayjs";
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  TextField,
+  Button,
+  Grid,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Alert,
+  CircularProgress,
+  Divider,
+} from '@mui/material';
+import { LineChart } from '@mui/x-charts/LineChart';
+import axios from 'axios';
+import { SWPResponse } from '@/types';
+import { formatCurrency, formatNumber } from '@/utils/calculations';
 
-const formatCurrency = (val: number) => `₹${val.toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
-
-const CustomTooltip = ({ active, payload, label }: any) => {
-    const theme = useTheme();
-    if (active && payload && payload.length) {
-        return (
-            <Paper elevation={6} sx={{ p: 2, backgroundColor: alpha(theme.palette.background.paper, 0.95), border: `1px solid ${theme.palette.divider}`, borderRadius: 2 }}>
-                <Typography variant="caption" color="text.secondary" fontWeight={500}>
-                    Date: <Box component="span" fontWeight="700">{dayjs(label).format('DD MMM, YYYY')}</Box>
-                </Typography>
-                <Typography variant="subtitle1" fontWeight={700} color="success.main">
-                    Corpus Value: {formatCurrency(payload[0].value)}
-                </Typography>
-            </Paper>
-        );
-    }
-    return null;
-};
-
-export default function SWPCalculator({ code }: { code: string }) {
-    const [initialInvestment, setInitialInvestment] = useState<number>(1000000);
-    const [monthlyWithdrawal, setMonthlyWithdrawal] = useState<number>(8000);
-    const [from, setFrom] = useState<string>(dayjs().subtract(5, 'year').format('YYYY-MM-DD'));
-    const [to, setTo] = useState<string>(dayjs().format('YYYY-MM-DD'));
-    const [result, setResult] = useState<any>(null);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
-    const theme = useTheme();
-
-    const handleCalculate = async () => {
-        if (!initialInvestment || !monthlyWithdrawal || !from || !to) return;
-        setLoading(true);
-        setError(null);
-        setResult(null);
-
-        try {
-            const res = await fetch(`/api/scheme/${code}/swp`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ initialInvestment, monthlyWithdrawal, from, to }),
-            });
-            if (!res.ok) {
-                const errorData = await res.json();
-                throw new Error(errorData.error || "Failed to calculate.");
-            }
-            const data = await res.json();
-            setResult(data);
-        } catch (err: any) {
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return (
-        <Paper elevation={3} sx={{ width: "100%", borderRadius: 4, p: { xs: 3, md: 5 }, backgroundColor: theme.palette.background.default }}>
-            <Typography variant="h4" fontWeight={700} gutterBottom sx={{ mb: 4, textAlign: "center" }}>
-                Historical SWP Calculator
-            </Typography>
-
-            <Paper elevation={1} sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3, mb: 4, backgroundColor: alpha(theme.palette.background.paper, 0.9) }}>
-                <Stack spacing={3}>
-                    <TextField
-                        label="Total Investment Amount"
-                        type="number"
-                        fullWidth
-                        value={initialInvestment || ""}
-                        onChange={(e) => setInitialInvestment(Number(e.target.value))}
-                        InputLabelProps={{ shrink: true }}
-                        InputProps={{ startAdornment: <InputAdornment position="start">₹</InputAdornment> }}
-                    />
-                    <TextField
-                        label="Monthly Withdrawal Amount"
-                        type="number"
-                        fullWidth
-                        value={monthlyWithdrawal || ""}
-                        onChange={(e) => setMonthlyWithdrawal(Number(e.target.value))}
-                        InputLabelProps={{ shrink: true }}
-                        InputProps={{ startAdornment: <InputAdornment position="start">₹</InputAdornment> }}
-                    />
-                    <Stack direction={{ xs: "column", sm: "row" }} spacing={3}>
-                        <TextField label="Investment Date" type="date" fullWidth value={from} onChange={(e) => setFrom(e.target.value)} InputLabelProps={{ shrink: true }} />
-                        <TextField label="End Date" type="date" fullWidth value={to} onChange={(e) => setTo(e.target.value)} InputLabelProps={{ shrink: true }} />
-                    </Stack>
-                    <Button
-                        variant="contained"
-                        size="large"
-                        fullWidth
-                        onClick={handleCalculate}
-                        disabled={loading || !initialInvestment || !from || !to}
-                        startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <CalculateIcon />}
-                        sx={{
-                            background: `linear-gradient(135deg, ${theme.palette.success.main}, ${theme.palette.info.main})`,
-                            color: "#fff",
-                            py: 1.8,
-                            fontWeight: 700,
-                            "&:hover": { opacity: 0.9 },
-                        }}
-                    >
-                        {loading ? "Calculating..." : "Calculate SWP"}
-                    </Button>
-                </Stack>
-            </Paper>
-
-            {error && <Alert severity="error" sx={{ mb: 3 }}>{error}</Alert>}
-
-            {result && (
-                <Box>
-                    <Divider sx={{ my: 3 }} />
-                    {result.corpusRanOutDate && (
-                        <Alert severity="warning" sx={{ mb: 3 }}>
-                            Your corpus would have run out on approximately <strong>{dayjs(result.corpusRanOutDate).format("DD MMMM, YYYY")}</strong>.
-                        </Alert>
-                    )}
-
-                    <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" }, gap: 3, mb: 4 }}>
-                        <MetricItem label="Total Investment" value={formatCurrency(result.totalInvested)} color="info" theme={theme} />
-                        <MetricItem label="Total Withdrawn" value={formatCurrency(result.totalWithdrawn)} color="warning" theme={theme} />
-                        <MetricItem label="Final Value" value={formatCurrency(result.finalValue)} color="success" theme={theme} />
-                    </Box>
-
-                    {result.growthOverTime?.length > 1 && (
-                        <Box sx={{ borderRadius: 3, overflow: "hidden", p: 2, backgroundColor: alpha(theme.palette.background.paper, 0.8) }}>
-                            <Typography variant="h6" fontWeight={600} gutterBottom>Corpus Value Over Time</Typography>
-                            <Box sx={{ height: { xs: 300, md: 380 }, mt: 2 }}>
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <LineChart data={result.growthOverTime} margin={{ top: 10, right: 20, left: -10, bottom: 20 }}>
-                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={theme.palette.divider} />
-                                        <XAxis dataKey="date" tick={{ fontSize: 11, fill: theme.palette.text.secondary }} tickMargin={10} angle={-35} textAnchor="end" height={60} tickFormatter={(tick) => dayjs(tick).format('MMM YY')} />
-                                        <YAxis tickFormatter={(val) => val >= 1e5 ? `₹${(val / 1e5).toFixed(1)}L` : `₹${(val / 1000).toFixed(0)}k`} tick={{ fontSize: 11, fill: theme.palette.text.secondary }} width={70} />
-                                        <Tooltip content={<CustomTooltip />} />
-                                        <Line type="monotone" dataKey="value" stroke={theme.palette.success.main} strokeWidth={2.5} dot={false} activeDot={{ r: 6 }} />
-                                    </LineChart>
-                                </ResponsiveContainer>
-                            </Box>
-                        </Box>
-                    )}
-                </Box>
-            )}
-        </Paper>
-    );
+interface SWPCalculatorProps {
+  schemeCode: string;
 }
 
-function MetricItem({ label, value, color, theme }: { label: string; value: string; color: "primary" | "secondary" | "success" | "info" | "warning"; theme: any; }) {
-    const returnColor = theme.palette[color].main;
-    return (
-        <Paper variant="outlined" sx={{ textAlign: "center", p: 3, borderRadius: 3, transition: "all 0.2s", "&:hover": { transform: "translateY(-4px)", boxShadow: theme.shadows[4] } }}>
-            <Typography variant="body2" color="text.secondary" fontWeight={500} sx={{ textTransform: 'uppercase', mb: 1 }}>
-                {label}
+export default function SWPCalculator({ schemeCode }: SWPCalculatorProps) {
+  const [initialInvestment, setInitialInvestment] = useState('500000');
+  const [withdrawalAmount, setWithdrawalAmount] = useState('5000');
+  const [frequency, setFrequency] = useState<'monthly' | 'quarterly'>('monthly');
+  const [fromDate, setFromDate] = useState('2020-01-01');
+  const [toDate, setToDate] = useState(new Date().toISOString().split('T')[0]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [result, setResult] = useState<SWPResponse | null>(null);
+
+  const handleCalculate = async () => {
+    setError('');
+    setResult(null);
+
+    if (!initialInvestment || parseFloat(initialInvestment) <= 0) {
+      setError('Please enter a valid initial investment');
+      return;
+    }
+
+    if (!withdrawalAmount || parseFloat(withdrawalAmount) <= 0) {
+      setError('Please enter a valid withdrawal amount');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await axios.post(`/api/scheme/${schemeCode}/swp`, {
+        initialInvestment: parseFloat(initialInvestment),
+        withdrawalAmount: parseFloat(withdrawalAmount),
+        frequency,
+        from: fromDate,
+        to: toDate,
+      });
+      setResult(response.data);
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Failed to calculate SWP');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Card>
+      <CardContent>
+        <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+          SWP Calculator
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+          Calculate Systematic Withdrawal Plan projections
+        </Typography>
+
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Initial Investment (₹)"
+              type="number"
+              value={initialInvestment}
+              onChange={(e) => setInitialInvestment(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              fullWidth
+              label="Withdrawal Amount (₹)"
+              type="number"
+              value={withdrawalAmount}
+              onChange={(e) => setWithdrawalAmount(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <FormControl fullWidth>
+              <InputLabel>Frequency</InputLabel>
+              <Select
+                value={frequency}
+                label="Frequency"
+                onChange={(e) => setFrequency(e.target.value as any)}
+              >
+                <MenuItem value="monthly">Monthly</MenuItem>
+                <MenuItem value="quarterly">Quarterly</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              fullWidth
+              label="Start Date"
+              type="date"
+              value={fromDate}
+              onChange={(e) => setFromDate(e.target.value)}
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <TextField
+              fullWidth
+              label="End Date"
+              type="date"
+              value={toDate}
+              onChange={(e) => setToDate(e.target.value)}
+              InputLabelProps={{ shrink: true }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <Button
+              fullWidth
+              variant="contained"
+              size="large"
+              onClick={handleCalculate}
+              disabled={loading}
+            >
+              {loading ? <CircularProgress size={24} /> : 'Calculate SWP'}
+            </Button>
+          </Grid>
+        </Grid>
+
+        {error && (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {error}
+          </Alert>
+        )}
+
+        {result && (
+          <Box sx={{ mt: 4 }}>
+            <Divider sx={{ mb: 3 }} />
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
+              Results
             </Typography>
-            <Typography variant="h5" fontWeight={700} sx={{ color: returnColor }}>
-                {value}
-            </Typography>
-        </Paper>
-    );
+
+            <Grid container spacing={2} sx={{ mb: 3 }}>
+              <Grid item xs={6} sm={3}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    Initial Investment
+                  </Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    {formatCurrency(result.initialInvestment)}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={6} sm={3}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    Total Withdrawn
+                  </Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600, color: 'warning.main' }}>
+                    {formatCurrency(result.totalWithdrawn)}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={6} sm={3}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    Remaining Value
+                  </Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600, color: 'success.main' }}>
+                    {formatCurrency(result.remainingValue)}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={6} sm={3}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    Remaining Units
+                  </Typography>
+                  <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                    {formatNumber(result.remainingUnits, 3)}
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
+
+            {result.withdrawals.length > 0 && (
+              <Box sx={{ mt: 3 }}>
+                <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600 }}>
+                  Withdrawal Timeline
+                </Typography>
+                <Box sx={{ width: '100%', height: 300 }}>
+                  <LineChart
+                    xAxis={[
+                      {
+                        data: result.withdrawals.map((w) => new Date(w.date)),
+                        scaleType: 'time',
+                        valueFormatter: (date) =>
+                          new Date(date).toLocaleDateString('en-IN', {
+                            month: 'short',
+                            year: 'numeric',
+                          }),
+                      },
+                    ]}
+                    series={[
+                      {
+                        data: result.withdrawals.map((w) => w.remainingValue),
+                        label: 'Remaining Value',
+                        color: '#2196f3',
+                        showMark: false,
+                      },
+                    ]}
+                    height={300}
+                    margin={{ top: 20, right: 20, bottom: 60, left: 80 }}
+                  />
+                </Box>
+              </Box>
+            )}
+          </Box>
+        )}
+      </CardContent>
+    </Card>
+  );
 }

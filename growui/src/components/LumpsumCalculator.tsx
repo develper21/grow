@@ -7,31 +7,25 @@ import {
   TextField,
   Button,
   Grid,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Alert,
   CircularProgress,
   Divider,
 } from '@mui/material';
-import { LineChart } from '@mui/x-charts/LineChart';
 import axios from 'axios';
-import { SIPResponse } from '@/types';
+import { LumpsumResponse } from '@/types';
 import { formatCurrency, formatPercentage, formatNumber } from '@/utils/calculations';
 
-interface SIPCalculatorProps {
+interface LumpsumCalculatorProps {
   schemeCode: string;
 }
 
-export default function SIPCalculator({ schemeCode }: SIPCalculatorProps) {
-  const [amount, setAmount] = useState('5000');
-  const [frequency, setFrequency] = useState<'monthly' | 'weekly' | 'quarterly'>('monthly');
+export default function LumpsumCalculator({ schemeCode }: LumpsumCalculatorProps) {
+  const [amount, setAmount] = useState('100000');
   const [fromDate, setFromDate] = useState('2020-01-01');
   const [toDate, setToDate] = useState(new Date().toISOString().split('T')[0]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [result, setResult] = useState<SIPResponse | null>(null);
+  const [result, setResult] = useState<LumpsumResponse | null>(null);
 
   const handleCalculate = async () => {
     setError('');
@@ -44,15 +38,14 @@ export default function SIPCalculator({ schemeCode }: SIPCalculatorProps) {
 
     try {
       setLoading(true);
-      const response = await axios.post(`/api/scheme/${schemeCode}/sip`, {
+      const response = await axios.post(`/api/scheme/${schemeCode}/lumpsum`, {
         amount: parseFloat(amount),
-        frequency,
         from: fromDate,
         to: toDate,
       });
       setResult(response.data);
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to calculate SIP returns');
+      setError(err.response?.data?.error || 'Failed to calculate lumpsum returns');
     } finally {
       setLoading(false);
     }
@@ -62,40 +55,26 @@ export default function SIPCalculator({ schemeCode }: SIPCalculatorProps) {
     <Card>
       <CardContent>
         <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-          SIP Calculator
+          Lumpsum Calculator
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          Calculate returns for Systematic Investment Plan
+          Calculate returns for one-time investment
         </Typography>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12}>
             <TextField
               fullWidth
-              label="SIP Amount (₹)"
+              label="Investment Amount (₹)"
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel>Frequency</InputLabel>
-              <Select
-                value={frequency}
-                label="Frequency"
-                onChange={(e) => setFrequency(e.target.value as any)}
-              >
-                <MenuItem value="weekly">Weekly</MenuItem>
-                <MenuItem value="monthly">Monthly</MenuItem>
-                <MenuItem value="quarterly">Quarterly</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={6}>
             <TextField
               fullWidth
-              label="Start Date"
+              label="Investment Date"
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
@@ -138,14 +117,14 @@ export default function SIPCalculator({ schemeCode }: SIPCalculatorProps) {
               Results
             </Typography>
 
-            <Grid container spacing={2} sx={{ mb: 3 }}>
+            <Grid container spacing={3}>
               <Grid item xs={6} sm={3}>
                 <Box>
                   <Typography variant="body2" color="text.secondary">
-                    Total Invested
+                    Invested
                   </Typography>
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    {formatCurrency(result.totalInvested)}
+                    {formatCurrency(result.invested)}
                   </Typography>
                 </Box>
               </Grid>
@@ -165,7 +144,7 @@ export default function SIPCalculator({ schemeCode }: SIPCalculatorProps) {
                     Total Units
                   </Typography>
                   <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                    {formatNumber(result.totalUnits, 3)}
+                    {formatNumber(result.units, 3)}
                   </Typography>
                 </Box>
               </Grid>
@@ -185,46 +164,43 @@ export default function SIPCalculator({ schemeCode }: SIPCalculatorProps) {
                   </Typography>
                 </Box>
               </Grid>
-            </Grid>
-
-            {result.investments.length > 0 && (
-              <Box sx={{ mt: 3 }}>
-                <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 600 }}>
-                  Investment Growth
-                </Typography>
-                <Box sx={{ width: '100%', height: 300 }}>
-                  <LineChart
-                    xAxis={[
-                      {
-                        data: result.investments.map((inv) => new Date(inv.date)),
-                        scaleType: 'time',
-                        valueFormatter: (date) =>
-                          new Date(date).toLocaleDateString('en-IN', {
-                            month: 'short',
-                            year: 'numeric',
-                          }),
-                      },
-                    ]}
-                    series={[
-                      {
-                        data: result.investments.map((inv) => inv.totalInvested),
-                        label: 'Invested',
-                        color: '#ff9800',
-                        showMark: false,
-                      },
-                      {
-                        data: result.investments.map((inv) => inv.currentValue),
-                        label: 'Current Value',
-                        color: '#4caf50',
-                        showMark: false,
-                      },
-                    ]}
-                    height={300}
-                    margin={{ top: 20, right: 20, bottom: 60, left: 80 }}
-                  />
+              <Grid item xs={12} sm={6}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    Start NAV ({result.startDate})
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                    ₹{formatNumber(result.startNAV)}
+                  </Typography>
                 </Box>
-              </Box>
-            )}
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    End NAV ({result.endDate})
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                    ₹{formatNumber(result.endNAV)}
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={12}>
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    Annualized Return
+                  </Typography>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      fontWeight: 600,
+                      color: result.annualizedReturn >= 0 ? 'success.main' : 'error.main',
+                    }}
+                  >
+                    {formatPercentage(result.annualizedReturn)}
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
           </Box>
         )}
       </CardContent>
