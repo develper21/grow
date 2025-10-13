@@ -1,46 +1,36 @@
-import mongoose, { Schema, model, models, Document } from "mongoose";
+// src/models/Fund.ts
+import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface INavPoint {
-  date: string;
+  date: Date;
   nav: number;
 }
 
 export interface IFund extends Document {
-  externalId: string;
+  schemeCode: string;       // unique code
   name: string;
   category?: string;
-  schemeCode?: string;
-  active: boolean;
-  latestNav?: number;
-  latestNavDate?: string;
-  navHistory: { date: string; nav: number }[];
-  metadata?: Record<string, any>;
+  isActive: boolean;
+  currentNAV?: number;
+  currentNAVDate?: Date;
+  navHistory: INavPoint[];  // descending or ascending - we store points
+  updatedAt: Date;
 }
 
-const NavPointSchema = new Schema(
-  {
-    date: { type: String, required: true },
-    nav: { type: Number, required: true },
-  },
-  { _id: false }
-);
-
-const FundSchema = new Schema<IFund>({
-  externalId: { type: String, required: true, unique: true },
-  name: { type: String, required: true },
-  category: { type: String },
-  schemeCode: { type: String },
-  active: { type: Boolean, default: true },
-  latestNav: { type: Number },
-  latestNavDate: { type: String },
-  navHistory: [
-    {
-      date: { type: String },
-      nav: { type: Number },
-    },
-  ],
-  metadata: { type: Schema.Types.Mixed },
+const NavPointSchema = new Schema<INavPoint>({
+  date: { type: Date, required: true },
+  nav: { type: Number, required: true },
 });
 
-const Fund = models.Fund || model<IFund>("Fund", FundSchema);
-export default Fund;
+const FundSchema = new Schema<IFund>({
+  schemeCode: { type: String, required: true, unique: true, index: true },
+  name: { type: String, required: true },
+  category: { type: String },
+  isActive: { type: Boolean, required: true, default: true },
+  currentNAV: { type: Number },
+  currentNAVDate: { type: Date },
+  navHistory: { type: [NavPointSchema], default: [] },
+  updatedAt: { type: Date, default: Date.now },
+});
+
+export const Fund: Model<IFund> = (mongoose.models.Fund as Model<IFund>) || mongoose.model<IFund>("Fund", FundSchema);

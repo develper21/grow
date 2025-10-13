@@ -1,19 +1,20 @@
-import mongoose, { Schema } from "mongoose";
+// src/models/Watchlist.ts
+import mongoose, { Schema, Document, Model } from "mongoose";
 
-export interface IWatchItem {
-  userId: string;
-  externalFundId: string;
+export interface IWatchlistItem extends Document {
+  userId: string;       // string for now — integrate auth user id later
+  schemeCode: string;   // ref to Fund.schemeCode
+  addedAt: Date;
   note?: string;
-  createdAt?: Date;
 }
 
-const WatchlistSchema = new Schema<IWatchItem>(
-  {
-    userId: { type: String, required: true, index: true },
-    externalFundId: { type: String, required: true },
-    note: String,
-  },
-  { timestamps: true }
-);
+const WatchlistSchema = new Schema<IWatchlistItem>({
+  userId: { type: String, required: true, index: true },
+  schemeCode: { type: String, required: true, index: true },
+  addedAt: { type: Date, default: Date.now },
+  note: { type: String },
+});
 
-export default mongoose.models.Watchlist || mongoose.model("Watchlist", WatchlistSchema);
+export const Watchlist: Model<IWatchlistItem> =
+  (mongoose.models.Watchlist as Model<IWatchlistItem>) ||
+  mongoose.model<IWatchlistItem>("Watchlist", WatchlistSchema);
