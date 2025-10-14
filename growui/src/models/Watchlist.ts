@@ -1,9 +1,8 @@
-// src/models/Watchlist.ts
 import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IWatchlistItem extends Document {
-  userId: string;       // string for now — integrate auth user id later
-  schemeCode: string;   // ref to Fund.schemeCode
+  userId: string;
+  schemeCode: string;
   addedAt: Date;
   note?: string;
 }
