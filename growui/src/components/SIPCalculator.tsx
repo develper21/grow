@@ -14,6 +14,8 @@ import {
   Alert,
   CircularProgress,
   Divider,
+  useTheme,
+  alpha,
 } from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
 import axios from 'axios';
@@ -25,6 +27,7 @@ interface SIPCalculatorProps {
 }
 
 export default function SIPCalculator({ schemeCode }: SIPCalculatorProps) {
+  const theme = useTheme();
   const [amount, setAmount] = useState('5000');
   const [frequency, setFrequency] = useState<'monthly' | 'weekly' | 'quarterly'>('monthly');
   const [fromDate, setFromDate] = useState('2020-01-01');
@@ -59,14 +62,29 @@ export default function SIPCalculator({ schemeCode }: SIPCalculatorProps) {
   };
 
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-          SIP Calculator
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          Calculate returns for Systematic Investment Plan
-        </Typography>
+    <Card sx={{
+      borderRadius: 3,
+      border: '1px solid',
+      borderColor: 'rgba(0,0,0,0.08)',
+      boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+    }}>
+      <CardContent sx={{ p: 4 }}>
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2,
+          mb: 3,
+          p: 2,
+          bgcolor: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.08)} 0%, ${alpha(theme.palette.secondary.main, 0.08)} 100%)`,
+          borderRadius: 2,
+        }}>
+          <Typography variant="h5" sx={{ fontWeight: 800, color: 'text.primary' }}>
+            💰 SIP Calculator
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+            Calculate returns for Systematic Investment Plan
+          </Typography>
+        </Box>
 
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
