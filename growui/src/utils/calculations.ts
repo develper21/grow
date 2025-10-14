@@ -14,12 +14,10 @@ export function findNAVForDate(
   navData: NAVData[],
   targetDate: Date
 ): NAVData | null {
-  // Sort NAV data by date (newest first)
   const sortedData = [...navData].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 
-  // Find exact match or nearest earlier date
   for (const nav of sortedData) {
     const navDate = new Date(nav.date);
     if (navDate <= targetDate && isValidNAV(nav.nav)) {
