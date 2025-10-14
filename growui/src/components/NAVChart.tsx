@@ -33,7 +33,6 @@ export default function NAVChart({ data, period = '1y', fundName }: NAVChartProp
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [chartType, setChartType] = useState<ChartType>('line');
 
-  // Filter data based on period (memoized)
   const chartData = useMemo(() => {
     const now = new Date();
     const monthsAgo = {
@@ -56,7 +55,6 @@ export default function NAVChart({ data, period = '1y', fundName }: NAVChartProp
       .reverse();
   }, [data, period]);
 
-  // Helpers
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat('en-IN', {
       style: 'currency',
@@ -72,7 +70,6 @@ export default function NAVChart({ data, period = '1y', fundName }: NAVChartProp
       year: 'numeric',
     });
 
-  // Build chart data based on chart type - always call useMemo at top level
   const { series, xAxis, navValues, firstValue, lastValue, performance, isPositive } = useMemo(() => {
     const navValues = chartData.map(d => Number(d.nav));
     const firstValue = navValues[0];
@@ -81,7 +78,6 @@ export default function NAVChart({ data, period = '1y', fundName }: NAVChartProp
     const isPositive = performance >= 0;
 
     if (chartType === 'bar') {
-      // For bar charts: use formatted date strings as categories
       const dateLabels = chartData.map(d =>
         new Date(d.date).toLocaleDateString('en-IN', {
           day: 'numeric',
@@ -112,7 +108,6 @@ export default function NAVChart({ data, period = '1y', fundName }: NAVChartProp
         isPositive
       };
     } else {
-      // For line charts: use timestamps
       const timestamps = chartData.map(d => new Date(d.date).getTime());
 
       const lineSeries = [{
@@ -157,155 +152,192 @@ export default function NAVChart({ data, period = '1y', fundName }: NAVChartProp
   }
 
   return (
-    <Card sx={{ borderRadius: 4, border: '1px solid', borderColor: 'rgba(0,0,0,0.08)', overflow: 'visible' }}>
-      <CardContent sx={{ p: 0 }}>
-        {/* Header */}
-        <Box sx={{
-          p: 3,
-          pb: 2,
-          background: 'linear-gradient(135deg, rgba(37,99,235,0.05), rgba(124,58,237,0.05))',
-          borderBottom: '1px solid',
-          borderColor: 'rgba(0,0,0,0.08)'
-        }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-            <Box>
-              <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>
-                NAV Performance Chart
+    <Card sx={{
+      borderRadius: 3,
+      border: '1px solid',
+      borderColor: 'rgba(0,0,0,0.08)',
+      overflow: 'hidden',
+      boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+    }}>
+      {/* Header */}
+      <Box sx={{
+        p: 3,
+        background: `linear-gradient(135deg, ${alpha(theme.palette.primary.main, 0.08)} 0%, ${alpha(theme.palette.secondary.main, 0.08)} 100%)`,
+        borderBottom: '1px solid',
+        borderColor: 'rgba(0,0,0,0.06)'
+      }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 3 }}>
+          <Box>
+            <Typography variant="h5" sx={{ fontWeight: 800, mb: 1, color: 'text.primary' }}>
+              📈 NAV Performance Chart
+            </Typography>
+            {fundName && (
+              <Typography variant="body1" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+                {fundName}
               </Typography>
-              {fundName && (
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  {fundName}
-                </Typography>
+            )}
+          </Box>
+          <Chip
+            label={`${period.toUpperCase()} Period`}
+            sx={{
+              bgcolor: alpha(theme.palette.primary.main, 0.15),
+              color: 'primary.main',
+              fontWeight: 700,
+              fontSize: '0.8rem',
+              border: `1px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+            }}
+          />
+        </Box>
+
+        {/* Performance Stats */}
+        <Box sx={{
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', sm: 'repeat(3, 1fr)' },
+          gap: 3,
+          mb: 3,
+        }}>
+          <Box sx={{
+            p: 2,
+            bgcolor: 'rgba(255, 255, 255, 0.8)',
+            borderRadius: 2,
+            border: '1px solid',
+            borderColor: alpha(theme.palette.primary.main, 0.1),
+          }}>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5, fontSize: '0.75rem' }}>
+              Current NAV
+            </Typography>
+            <Typography variant="h6" sx={{ fontWeight: 800, color: 'primary.main' }}>
+              {formatCurrency(lastValue)}
+            </Typography>
+          </Box>
+
+          <Box sx={{
+            p: 2,
+            bgcolor: 'rgba(255, 255, 255, 0.8)',
+            borderRadius: 2,
+            border: '1px solid',
+            borderColor: isPositive ? alpha(theme.palette.success.main, 0.2) : alpha(theme.palette.error.main, 0.2),
+          }}>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5, fontSize: '0.75rem' }}>
+              {period.toUpperCase()} Return
+            </Typography>
+            <Stack direction="row" alignItems="center" spacing={0.5}>
+              {isPositive ? (
+                <TrendingUpIcon sx={{ color: 'success.main', fontSize: 16 }} />
+              ) : (
+                <TrendingDownIcon sx={{ color: 'error.main', fontSize: 16 }} />
               )}
-            </Box>
-            <Stack direction="row" spacing={1}>
-              <Chip
-                label={`${period.toUpperCase()} Period`}
-                size="small"
+              <Typography
+                variant="h6"
                 sx={{
-                  bgcolor: alpha(theme.palette.primary.main, 0.1),
-                  color: 'primary.main',
-                  fontWeight: 600,
+                  fontWeight: 800,
+                  color: isPositive ? 'success.main' : 'error.main',
                 }}
-              />
+              >
+                {isPositive ? '+' : ''}{performance.toFixed(2)}%
+              </Typography>
             </Stack>
           </Box>
 
-          {/* Performance summary */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 2 }}>
-            <Box>
-              <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-                Current NAV
-              </Typography>
-              <Typography variant="h5" sx={{ fontWeight: 700, color: 'primary.main' }}>
-                {formatCurrency(lastValue)}
-              </Typography>
-            </Box>
-            <Box>
-              <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-                {period.toUpperCase()} Performance
-              </Typography>
-              <Stack direction="row" alignItems="center" spacing={0.5}>
-                {isPositive ? (
-                  <TrendingUpIcon sx={{ color: 'success.main', fontSize: 20 }} />
-                ) : (
-                  <TrendingDownIcon sx={{ color: 'error.main', fontSize: 20 }} />
-                )}
-                <Typography
-                  variant="h6"
-                  sx={{
-                    fontWeight: 700,
-                    color: isPositive ? 'success.main' : 'error.main',
-                  }}
-                >
-                  {isPositive ? '+' : ''}{performance.toFixed(2)}%
-                </Typography>
-              </Stack>
-            </Box>
-            <Box>
-              <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
-                Data Points
-              </Typography>
-              <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                {chartData.length}
-              </Typography>
-            </Box>
+          <Box sx={{
+            p: 2,
+            bgcolor: 'rgba(255, 255, 255, 0.8)',
+            borderRadius: 2,
+            border: '1px solid',
+            borderColor: alpha(theme.palette.info.main, 0.2),
+          }}>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5, fontSize: '0.75rem' }}>
+              Data Points
+            </Typography>
+            <Typography variant="h6" sx={{ fontWeight: 800, color: 'info.main' }}>
+              {chartData.length}
+            </Typography>
           </Box>
+        </Box>
 
-          {/* Chart type buttons */}
-          <Stack direction="row" spacing={1} justifyContent="center">
-            {[
-              { type: 'line' as ChartType, label: 'Line', icon: <ShowChartIcon /> },
-              { type: 'bar' as ChartType, label: 'Bar', icon: <TrendingUpIcon /> },
-            ].map((option) => (
-              <Button
-                key={option.type}
-                variant={chartType === option.type ? 'contained' : 'outlined'}
-                size="small"
-                onClick={() => setChartType(option.type)}
-                startIcon={option.icon}
-                sx={{
-                  minWidth: 'auto',
-                  px: 2,
-                  py: 1,
-                  borderRadius: 2,
-                  fontSize: '0.8rem',
-                  '&.MuiButton-outlined': {
-                    borderColor: alpha(theme.palette.primary.main, 0.3),
-                    color: 'primary.main',
+        {/* Chart Type Selector */}
+        <Stack direction="row" spacing={1} justifyContent="center">
+          {[
+            { type: 'line' as ChartType, label: 'Line', icon: <ShowChartIcon /> },
+            { type: 'bar' as ChartType, label: 'Bar', icon: <TrendingUpIcon /> },
+          ].map((option) => (
+            <Button
+              key={option.type}
+              variant={chartType === option.type ? 'contained' : 'outlined'}
+              size="small"
+              onClick={() => setChartType(option.type)}
+              startIcon={option.icon}
+              sx={{
+                borderRadius: 2,
+                px: 3,
+                py: 1.5,
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                '&.MuiButton-contained': {
+                  boxShadow: '0 2px 8px rgba(37, 99, 235, 0.3)',
+                },
+                '&.MuiButton-outlined': {
+                  borderColor: alpha(theme.palette.primary.main, 0.4),
+                  color: 'primary.main',
+                  '&:hover': {
+                    borderColor: 'primary.main',
+                    bgcolor: alpha(theme.palette.primary.main, 0.05),
                   },
-                }}
-              >
-                {option.label}
-              </Button>
-            ))}
-          </Stack>
-        </Box>
-
-        {/* Chart */}
-        <Box sx={{ p: 3 }}>
-          {chartType === 'bar' ? (
-            <BarChart
-              series={series}
-              xAxis={xAxis}
-              height={isMobile ? 300 : 400}
-              margin={{
-                top: 20,
-                right: isMobile ? 10 : 30,
-                bottom: isMobile ? 50 : 70,
-                left: isMobile ? 10 : 60,
+                },
               }}
-              grid={{ vertical: true, horizontal: true }}
-            />
-          ) : (
-            <LineChart
-              series={series}
-              xAxis={xAxis}
-              height={isMobile ? 300 : 400}
-              margin={{
-                top: 20,
-                right: isMobile ? 10 : 30,
-                bottom: isMobile ? 50 : 70,
-                left: isMobile ? 10 : 60,
-              }}
-              grid={{ vertical: true, horizontal: true }}
-            />
-          )}
-        </Box>
+            >
+              {option.label}
+            </Button>
+          ))}
+        </Stack>
+      </Box>
 
-        {/* Footer */}
-        <Box sx={{
-          px: 3,
-          py: 2,
-          backgroundColor: alpha(theme.palette.grey[50], 0.5),
-          borderTop: '1px solid',
-          borderColor: 'rgba(0,0,0,0.08)'
-        }}>
-          <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.75rem' }}>
-            Showing NAV data from {formatDateFromTs(chartData[0] ? new Date(chartData[0].date).getTime() : 0)} to {formatDateFromTs(chartData[chartData.length - 1] ? new Date(chartData[chartData.length - 1].date).getTime() : 0)}
-          </Typography>
-        </Box>
-      </CardContent>
+      {/* Chart Area */}
+      <Box sx={{
+        p: 3,
+        background: 'linear-gradient(135deg, rgba(248,250,252,0.5) 0%, rgba(255,255,255,0.5) 100%)'
+      }}>
+        {chartType === 'bar' ? (
+          <BarChart
+            series={series}
+            xAxis={xAxis}
+            height={isMobile ? 280 : 380}
+            margin={{
+              top: 20,
+              right: isMobile ? 10 : 30,
+              bottom: isMobile ? 50 : 70,
+              left: isMobile ? 10 : 60,
+            }}
+            grid={{ vertical: true, horizontal: true }}
+          />
+        ) : (
+          <LineChart
+            series={series}
+            xAxis={xAxis}
+            height={isMobile ? 280 : 380}
+            margin={{
+              top: 20,
+              right: isMobile ? 10 : 30,
+              bottom: isMobile ? 50 : 70,
+              left: isMobile ? 10 : 60,
+            }}
+            grid={{ vertical: true, horizontal: true }}
+          />
+        )}
+      </Box>
+
+      {/* Footer */}
+      <Box sx={{
+        px: 3,
+        py: 2,
+        bgcolor: alpha(theme.palette.grey[50], 0.8),
+        borderTop: '1px solid',
+        borderColor: 'rgba(0,0,0,0.06)'
+      }}>
+        <Typography variant="caption" sx={{ color: 'text.secondary', fontSize: '0.75rem' }}>
+          📅 Showing NAV data from {formatDateFromTs(chartData[0] ? new Date(chartData[0].date).getTime() : 0)} to {formatDateFromTs(chartData[chartData.length - 1] ? new Date(chartData[chartData.length - 1].date).getTime() : 0)}
+        </Typography>
+      </Box>
     </Card>
   );
 }
