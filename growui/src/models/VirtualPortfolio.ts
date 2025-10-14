@@ -1,9 +1,8 @@
-// src/models/VirtualPortfolio.ts
 import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IVirtualSIP {
   schemeCode: string;
-  amount: number;       // amount per installment
+  amount: number;
   frequency: "monthly" | "quarterly" | "yearly";
   startDate: Date;
   active: boolean;
@@ -13,7 +12,7 @@ export interface IVirtualSIP {
 export interface IVirtualPortfolio extends Document {
   userId: string;
   name: string;
-  cash?: number; // virtual cash balance
+  cash?: number;
   sips: IVirtualSIP[];
   createdAt: Date;
   updatedAt: Date;
@@ -31,7 +30,7 @@ const VirtualSIPSchema = new Schema<IVirtualSIP>({
 const VirtualPortfolioSchema = new Schema<IVirtualPortfolio>({
   userId: { type: String, required: true, index: true },
   name: { type: String, default: "My Virtual Portfolio" },
-  cash: { type: Number, default: 100000 }, // default virtual money
+  cash: { type: Number, default: 100000 },
   sips: { type: [VirtualSIPSchema], default: [] },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
