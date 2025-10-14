@@ -49,7 +49,6 @@ export default function ComparisonCalculator({ schemeCode }: ComparisonCalculato
     try {
       setLoading(true);
 
-      // Calculate SIP
       const sipResponse = await axios.post(`/api/scheme/${schemeCode}/sip`, {
         amount: parseFloat(amount),
         frequency: 'monthly',
@@ -58,7 +57,6 @@ export default function ComparisonCalculator({ schemeCode }: ComparisonCalculato
       });
       setSipResult(sipResponse.data);
 
-      // Calculate equivalent lumpsum (total SIP amount invested at start)
       const lumpsumAmount = sipResponse.data.totalInvested;
       const lumpsumResponse = await axios.post(`/api/scheme/${schemeCode}/lumpsum`, {
         amount: lumpsumAmount,
