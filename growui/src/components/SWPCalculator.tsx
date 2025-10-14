@@ -14,6 +14,8 @@ import {
   Alert,
   CircularProgress,
   Divider,
+  useTheme,
+  alpha,
 } from '@mui/material';
 import { LineChart } from '@mui/x-charts/LineChart';
 import axios from 'axios';
@@ -25,6 +27,7 @@ interface SWPCalculatorProps {
 }
 
 export default function SWPCalculator({ schemeCode }: SWPCalculatorProps) {
+  const theme = useTheme();
   const [initialInvestment, setInitialInvestment] = useState('500000');
   const [withdrawalAmount, setWithdrawalAmount] = useState('5000');
   const [frequency, setFrequency] = useState<'monthly' | 'quarterly'>('monthly');
@@ -66,14 +69,29 @@ export default function SWPCalculator({ schemeCode }: SWPCalculatorProps) {
   };
 
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-          SWP Calculator
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          Calculate Systematic Withdrawal Plan projections
-        </Typography>
+    <Card sx={{
+      borderRadius: 3,
+      border: '1px solid',
+      borderColor: 'rgba(0,0,0,0.08)',
+      boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+    }}>
+      <CardContent sx={{ p: 4 }}>
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2,
+          mb: 3,
+          p: 2,
+          bgcolor: `linear-gradient(135deg, ${alpha(theme.palette.warning.main, 0.08)} 0%, ${alpha(theme.palette.error.main, 0.08)} 100%)`,
+          borderRadius: 2,
+        }}>
+          <Typography variant="h5" sx={{ fontWeight: 800, color: 'text.primary' }}>
+            💸 SWP Calculator
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+            Calculate Systematic Withdrawal Plan projections
+          </Typography>
+        </Box>
 
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
