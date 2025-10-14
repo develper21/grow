@@ -1,5 +1,3 @@
-// Mutual Fund Types
-
 export interface MFScheme {
   schemeCode: number;
   schemeName: string;
