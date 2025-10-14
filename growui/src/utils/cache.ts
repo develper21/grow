@@ -1,5 +1,3 @@
-// Simple in-memory cache with TTL
-
 interface CacheEntry<T> {
   data: T;
   timestamp: number;
@@ -14,7 +12,6 @@ class Cache {
   }
 
   set<T>(key: string, data: T, ttlSeconds: number = 43200): void {
-    // Default 12 hours
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
