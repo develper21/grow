@@ -32,7 +32,6 @@ export default async function handler(
   }
 
   try {
-    // Fetch scheme data
     const cacheKey = `scheme_${code}`;
     let schemeData = cache.get<SchemeDetails>(cacheKey);
 
@@ -53,7 +52,6 @@ export default async function handler(
     let totalUnits = 0;
     const investments: SIPResponse['investments'] = [];
 
-    // Calculate SIP investments
     let currentDate = new Date(startDate);
     
     while (currentDate <= endDate) {
@@ -67,7 +65,6 @@ export default async function handler(
           totalUnits += units;
           totalInvested += amount;
 
-          // Get current NAV for valuation
           const latestNAV = parseNAV(schemeData.data[0].nav);
           const currentValue = totalUnits * latestNAV;
 
@@ -93,11 +90,9 @@ export default async function handler(
       });
     }
 
-    // Calculate final values
     const latestNAV = parseNAV(schemeData.data[0].nav);
     const currentValue = totalUnits * latestNAV;
     const absoluteReturn = ((currentValue - totalInvested) / totalInvested) * 100;
-    
     const days = getDaysBetween(startDate, endDate);
     const annualizedReturn = calculateAnnualizedReturn(
       totalInvested / investments.length,

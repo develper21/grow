@@ -32,7 +32,6 @@ export default async function handler(
   }
 
   try {
-    // Fetch scheme data
     const cacheKey = `scheme_${code}`;
     let schemeData = cache.get<SchemeDetails>(cacheKey);
 
@@ -49,7 +48,6 @@ export default async function handler(
     const startDate = new Date(from);
     const endDate = new Date(to);
 
-    // Find NAV for dates
     const startNAVData = findNAVForDate(schemeData.data, startDate);
     const endNAVData = findNAVForDate(schemeData.data, endDate);
 
@@ -70,11 +68,9 @@ export default async function handler(
       });
     }
 
-    // Calculate lumpsum investment
     const units = amount / startNAV;
     const currentValue = units * endNAV;
     const absoluteReturn = calculateSimpleReturn(amount, currentValue);
-    
     const days = getDaysBetween(new Date(startNAVData.date), new Date(endNAVData.date));
     const annualizedReturn = calculateAnnualizedReturn(amount, currentValue, days);
 

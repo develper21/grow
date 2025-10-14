@@ -22,13 +22,11 @@ export default async function handler(
   try {
     const cacheKey = `scheme_${code}`;
     
-    // Check cache first
     const cachedData = cache.get<SchemeDetails>(cacheKey);
     if (cachedData) {
       return res.status(200).json(cachedData);
     }
 
-    // Fetch from API
     const response = await axios.get(`${MFAPI_BASE}/mf/${code}`);
     const schemeData: SchemeDetails = response.data;
 
@@ -36,7 +34,6 @@ export default async function handler(
       return res.status(404).json({ error: 'Scheme not found' });
     }
 
-    // Cache for 12 hours
     cache.set(cacheKey, schemeData, 43200);
 
     return res.status(200).json(schemeData);

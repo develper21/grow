@@ -15,59 +15,61 @@ export default async function handler(
   }
 
   try {
-    // Check cache first
     const cachedData = cache.get<MFScheme[]>(CACHE_KEY);
     if (cachedData) {
       return res.status(200).json(cachedData);
     }
 
-    // Fetch from external API and filter active funds
-    const response = await axios.get(`${MFAPI_BASE}/mf`, { timeout: 10000 });
+    const response = await axios.get(`${MFAPI_BASE}/mf`, { timeout: 15000 });
     const allSchemes: MFScheme[] = response.data;
 
-    // For development: return a subset of schemes that are likely to be active
-    // In production, you would check with MongoDB for funds with current NAV data
-    const activeSchemes = [];
+    console.log(`Fetched ${allSchemes.length} total schemes from MFAPI`);
 
-    for (const scheme of allSchemes.slice(0, 20)) { // Limit to first 20 for performance
+    // Check more schemes for NAV data (increase from 20 to 100+)
+    const schemesToCheck = allSchemes.slice(0, 150);
+    const schemesWithNAV = [];
+
+    for (const scheme of schemesToCheck) {
       try {
-        // Check if this scheme has current NAV data
-        const navResponse = await axios.get(`${MFAPI_BASE}/mf/${scheme.schemeCode}`, { timeout: 5000 });
+        const navResponse = await axios.get(`${MFAPI_BASE}/mf/${scheme.schemeCode}`, { timeout: 8000 });
         const navData = navResponse.data;
 
         if (navData?.data && navData.data.length > 0) {
-          // Check if latest NAV is recent (within last 7 days)
+          // Be less strict - just check if there's NAV data, not necessarily recent
           const latestNAV = navData.data[navData.data.length - 1];
           const navDate = new Date(latestNAV.date);
           const today = new Date();
           const daysDiff = Math.floor((today.getTime() - navDate.getTime()) / (1000 * 60 * 60 * 24));
 
-          if (daysDiff <= 7) {
-            activeSchemes.push(scheme);
+          // Accept NAV data from last 30 days (more lenient)
+          if (daysDiff <= 30) {
+            schemesWithNAV.push(scheme);
           }
         }
       } catch (error) {
-        // Skip schemes that fail to fetch NAV data
-        continue;
+        // If NAV fetch fails, still include the scheme (less strict)
+        schemesWithNAV.push(scheme);
       }
     }
 
-    // If no active schemes found, return basic schemes for development
-    if (activeSchemes.length === 0) {
-      return res.status(200).json(allSchemes.slice(0, 10));
+    // If we still don't have many schemes, return more from the total list
+    let finalSchemes = schemesWithNAV;
+    if (schemesWithNAV.length < 100) {
+      const additionalSchemes = allSchemes.slice(150, 300); // Get more schemes
+      finalSchemes = [...schemesWithNAV, ...additionalSchemes];
     }
 
-    // Cache for 6 hours
-    cache.set(CACHE_KEY, activeSchemes, 21600);
+    console.log(`Returning ${finalSchemes.length} schemes`);
 
-    return res.status(200).json(activeSchemes);
+    cache.set(CACHE_KEY, finalSchemes, 21600);
+
+    return res.status(200).json(finalSchemes);
   } catch (error) {
     console.error('Error fetching schemes:', error);
 
-    // Fallback: return basic scheme list without NAV checking
     try {
       const response = await axios.get(`${MFAPI_BASE}/mf`, { timeout: 10000 });
-      const schemes = response.data.slice(0, 20); // Return first 20 as fallback
+      const schemes = response.data.slice(0, 20);
       return res.status(200).json(schemes);
     } catch (fallbackError) {
       return res.status(500).json({ error: 'Failed to fetch schemes' });

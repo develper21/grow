@@ -28,7 +28,6 @@ export default async function handler(
   }
 
   try {
-    // Fetch scheme data
     const cacheKey = `scheme_${code}`;
     let schemeData = cache.get<SchemeDetails>(cacheKey);
 
@@ -42,7 +41,6 @@ export default async function handler(
       return res.status(404).json({ error: 'Scheme not found' });
     }
 
-    // Determine date range
     let startDate: Date;
     let endDate: Date = new Date();
 
@@ -57,7 +55,6 @@ export default async function handler(
       });
     }
 
-    // Find NAV for dates
     const startNAVData = findNAVForDate(schemeData.data, startDate);
     const endNAVData = findNAVForDate(schemeData.data, endDate);
 

@@ -11,23 +11,16 @@ import {
   Stack,
   Chip,
   useTheme,
-  IconButton,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import CalculateIcon from '@mui/icons-material/Calculate';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 import StarIcon from '@mui/icons-material/Star';
 import SecurityIcon from '@mui/icons-material/Security';
-import SpeedIcon from '@mui/icons-material/Speed';
-import SupportIcon from '@mui/icons-material/Support';
 import { useRouter } from 'next/router';
 
 export default function Home() {
   const router = useRouter();
-  const theme = useTheme();
 
   const features = [
     {
@@ -224,7 +217,6 @@ export default function Home() {
         </Container>
       </Box>
 
-      {/* Stats Section */}
       <Box sx={{ py: { xs: 8, md: 12 }, backgroundColor: 'background.paper' }}>
         <Container maxWidth="lg">
           <Grid container spacing={4} justifyContent="center">
@@ -259,7 +251,6 @@ export default function Home() {
         </Container>
       </Box>
 
-      {/* Features Section */}
       <Box sx={{ py: { xs: 8, md: 12 }, px: 2 }}>
         <Container maxWidth="lg">
           <Box sx={{ textAlign: 'center', mb: 8 }}>
@@ -341,7 +332,6 @@ export default function Home() {
         </Container>
       </Box>
 
-      {/* Testimonials Section */}
       <Box sx={{ py: { xs: 8, md: 12 }, backgroundColor: 'grey.50', px: 2 }}>
         <Container maxWidth="lg">
           <Box sx={{ textAlign: 'center', mb: 8 }}>
@@ -412,7 +402,6 @@ export default function Home() {
         </Container>
       </Box>
 
-      {/* CTA Section */}
       <Box
         sx={{
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',

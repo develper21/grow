@@ -30,7 +30,6 @@ export default async function handler(
   }
 
   try {
-    // Fetch scheme data
     const cacheKey = `scheme_${code}`;
     let schemeData = cache.get<SchemeDetails>(cacheKey);
 
@@ -47,7 +46,6 @@ export default async function handler(
     const startDate = new Date(from);
     const endDate = new Date(to);
 
-    // Get initial NAV
     const initialNAVData = findNAVForDate(schemeData.data, startDate);
     if (!initialNAVData) {
       return res.status(400).json({ error: 'No NAV data available for start date' });
@@ -58,12 +56,10 @@ export default async function handler(
       return res.status(400).json({ error: 'Invalid initial NAV' });
     }
 
-    // Calculate initial units
     let remainingUnits = initialInvestment / initialNAV;
     let totalWithdrawn = 0;
     const withdrawals: SWPResponse['withdrawals'] = [];
 
-    // Process withdrawals
     let currentDate = getNextSIPDate(startDate, frequency === 'monthly' ? 'monthly' : 'quarterly');
     
     while (currentDate <= endDate && remainingUnits > 0) {
@@ -97,7 +93,6 @@ export default async function handler(
       currentDate = getNextSIPDate(currentDate, frequency === 'monthly' ? 'monthly' : 'quarterly');
     }
 
-    // Calculate final remaining value
     const latestNAV = parseNAV(schemeData.data[0].nav);
     const remainingValue = remainingUnits * latestNAV;
 

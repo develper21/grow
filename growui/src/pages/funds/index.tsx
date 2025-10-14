@@ -7,7 +7,6 @@ import {
   Grid,
   Card,
   CardContent,
-  CardActionArea,
   Chip,
   InputAdornment,
   CircularProgress,
@@ -17,7 +16,6 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Stack,
   Avatar,
   Button,
   IconButton,
@@ -29,12 +27,9 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import SortIcon from '@mui/icons-material/Sort';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
-import AddIcon from '@mui/icons-material/Add';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { MFScheme } from '@/types';
@@ -64,32 +59,47 @@ const FundCard = ({ scheme, onClick, fundHouse, category, isInWatchlist = false,
     <Card
       sx={{
         height: '100%',
-        borderRadius: 4,
+        borderRadius: 3,
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         border: '1px solid',
-        borderColor: 'rgba(0, 0, 0, 0.08)',
+        borderColor: isInWatchlist ? 'primary.main' : 'rgba(0, 0, 0, 0.08)',
+        background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%)',
         '&:hover': {
-          transform: 'translateY(-8px)',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.12)',
+          transform: 'translateY(-6px)',
+          boxShadow: '0 12px 28px rgba(0, 0, 0, 0.15)',
           borderColor: 'primary.main',
         },
         cursor: 'pointer',
         position: 'relative',
+        overflow: 'hidden',
       }}
       onClick={() => onClick(scheme.schemeCode)}
     >
+      {/* Background Pattern */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: 3,
+          background: `linear-gradient(90deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+        }}
+      />
+
       {/* Watchlist Button */}
       {onWatchlistToggle && (
-        <Box sx={{ position: 'absolute', top: 12, right: 12, zIndex: 1 }}>
+        <Box sx={{ position: 'absolute', top: 10, right: 10, zIndex: 1 }}>
           <Tooltip title={isInWatchlist ? "Remove from Watchlist" : "Add to Watchlist"}>
             <IconButton
               size="small"
               onClick={handleWatchlistClick}
               sx={{
-                bgcolor: isInWatchlist ? alpha(theme.palette.primary.main, 0.1) : 'rgba(255, 255, 255, 0.9)',
+                bgcolor: isInWatchlist ? alpha(theme.palette.primary.main, 0.15) : 'rgba(255, 255, 255, 0.95)',
                 color: isInWatchlist ? 'primary.main' : 'text.secondary',
+                backdropFilter: 'blur(10px)',
                 '&:hover': {
-                  bgcolor: isInWatchlist ? alpha(theme.palette.primary.main, 0.2) : alpha(theme.palette.primary.main, 0.1),
+                  bgcolor: isInWatchlist ? alpha(theme.palette.primary.main, 0.25) : alpha(theme.palette.primary.main, 0.1),
                   color: 'primary.main',
                 },
                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
@@ -103,67 +113,79 @@ const FundCard = ({ scheme, onClick, fundHouse, category, isInWatchlist = false,
 
       <CardContent sx={{ p: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-          <Avatar
-            sx={{
-              bgcolor: alpha(theme.palette.primary.main, 0.1),
-              color: 'primary.main',
-              width: 48,
-              height: 48,
-              fontSize: '1.2rem',
-              fontWeight: 700,
-            }}
-          >
-            {fundHouse.substring(0, 2).toUpperCase()}
-          </Avatar>
-          <Chip
-            label={category}
-            size="small"
-            sx={{
-              bgcolor: alpha(theme.palette.primary.main, 0.1),
-              color: 'primary.main',
-              fontWeight: 600,
-              fontSize: '0.75rem',
-            }}
-          />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Avatar
+              sx={{
+                bgcolor: alpha(theme.palette.primary.main, 0.15),
+                color: 'primary.main',
+                width: 44,
+                height: 44,
+                fontSize: '1rem',
+                fontWeight: 700,
+                border: '2px solid',
+                borderColor: alpha(theme.palette.primary.main, 0.2),
+              }}
+            >
+              {fundHouse.substring(0, 2).toUpperCase()}
+            </Avatar>
+            <Box>
+              <Chip
+                label={category}
+                size="small"
+                sx={{
+                  bgcolor: alpha(theme.palette.primary.main, 0.1),
+                  color: 'primary.main',
+                  fontWeight: 600,
+                  fontSize: '0.7rem',
+                  mb: 0.5,
+                }}
+              />
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'text.secondary',
+                  fontSize: '0.8rem',
+                  fontWeight: 500,
+                }}
+              >
+                {fundHouse}
+              </Typography>
+            </Box>
+          </Box>
         </Box>
 
         <Typography
           variant="h6"
           sx={{
-            fontWeight: 600,
-            mb: 1,
-            lineHeight: 1.3,
+            fontWeight: 700,
+            mb: 2,
+            lineHeight: 1.2,
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
-            minHeight: '3.5em',
+            minHeight: '3.2em',
+            color: 'text.primary',
           }}
         >
           {scheme.schemeName.replace(/^[^-]+-\s*/, '')}
         </Typography>
 
-        <Typography
-          variant="body2"
-          sx={{
-            color: 'text.secondary',
-            mb: 2,
-            fontSize: '0.85rem',
-          }}
-        >
-          {fundHouse}
-        </Typography>
-
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 'auto' }}>
           <Box>
-            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
+            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5, fontSize: '0.75rem' }}>
               Fund Code
             </Typography>
-            <Typography variant="h6" sx={{ fontWeight: 700, color: 'primary.main' }}>
+            <Typography variant="h6" sx={{ fontWeight: 800, color: 'primary.main', fontSize: '1.1rem' }}>
               {scheme.schemeCode}
             </Typography>
           </Box>
-          <TrendingUpIcon sx={{ color: 'success.main', fontSize: 24 }} />
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <TrendingUpIcon sx={{ color: 'success.main', fontSize: 20 }} />
+            <Typography variant="body2" sx={{ color: 'success.main', fontWeight: 600 }}>
+              Active
+            </Typography>
+          </Box>
         </Box>
       </CardContent>
     </Card>
@@ -172,7 +194,6 @@ const FundCard = ({ scheme, onClick, fundHouse, category, isInWatchlist = false,
 
 export default function FundsPage() {
   const router = useRouter();
-  const theme = useTheme();
   const [schemes, setSchemes] = useState<MFScheme[]>([]);
   const [filteredSchemes, setFilteredSchemes] = useState<MFScheme[]>([]);
   const [loading, setLoading] = useState(true);
@@ -192,21 +213,18 @@ export default function FundsPage() {
   const filterSchemes = useCallback(() => {
     let filtered = [...schemes];
 
-    // Search filter
     if (searchQuery) {
       filtered = filtered.filter((scheme) =>
         scheme.schemeName.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    // Category filter
     if (categoryFilter !== 'all') {
       filtered = filtered.filter((scheme) =>
         scheme.schemeName.toLowerCase().includes(categoryFilter.toLowerCase())
       );
     }
 
-    // Sort
     switch (sortBy) {
       case 'name':
         filtered.sort((a, b) => a.schemeName.localeCompare(b.schemeName));
@@ -229,7 +247,7 @@ export default function FundsPage() {
   const loadWatchlist = async () => {
     try {
       const response = await axios.get('/api/watchlist', {
-        params: { userId: 'default-user' } // Using default user for now
+        params: { userId: 'default-user' }
       });
       const watchlistItems = response.data.data || [];
       const schemeCodes = new Set<number>(watchlistItems.map((item: any) => parseInt(item.item.schemeCode)));
@@ -390,7 +408,6 @@ export default function FundsPage() {
 
   return (
     <Box sx={{ backgroundColor: 'background.default', minHeight: '100vh' }}>
-      {/* Hero Section */}
       <Box
         sx={{
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -441,7 +458,6 @@ export default function FundsPage() {
       </Box>
 
       <Container maxWidth="lg" sx={{ py: { xs: 4, md: 6 }, px: { xs: 2, md: 3 } }}>
-        {/* Filters Section */}
         <Paper
           elevation={0}
           sx={{
@@ -547,7 +563,6 @@ export default function FundsPage() {
           </Box>
         </Paper>
 
-        {/* Funds Grid */}
         <Grid container spacing={3}>
           {paginatedSchemes.map((scheme) => (
             <Grid item xs={12} sm={6} lg={4} xl={3} key={scheme.schemeCode}>
@@ -603,7 +618,6 @@ export default function FundsPage() {
         )}
       </Container>
 
-      {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}

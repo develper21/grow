@@ -53,7 +53,6 @@ function TabPanel(props: TabPanelProps) {
 export default function SchemeDetailPage() {
   const router = useRouter();
   const { code } = router.query;
-
   const [scheme, setScheme] = useState<SchemeDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -143,7 +142,6 @@ export default function SchemeDetailPage() {
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* Breadcrumbs */}
       <Breadcrumbs
         separator={<NavigateNextIcon fontSize="small" />}
         sx={{ mb: 3 }}
@@ -167,7 +165,6 @@ export default function SchemeDetailPage() {
         <Typography color="text.primary">Scheme Details</Typography>
       </Breadcrumbs>
 
-      {/* Scheme Header */}
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Box sx={{ mb: 2 }}>
@@ -205,7 +202,6 @@ export default function SchemeDetailPage() {
         </CardContent>
       </Card>
 
-      {/* NAV Chart */}
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
@@ -231,7 +227,6 @@ export default function SchemeDetailPage() {
         </CardContent>
       </Card>
 
-      {/* Returns Table */}
       <Card sx={{ mb: 3 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
@@ -241,7 +236,6 @@ export default function SchemeDetailPage() {
         </CardContent>
       </Card>
 
-      {/* Calculators */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
         <Tabs value={tabValue} onChange={(_, value) => setTabValue(value)}>
           <Tab label="SIP Calculator" />

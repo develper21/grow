@@ -1,35 +1,20 @@
-// pages/api/virtual_portfolio/index.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 
-/**
- * POST /api/virtual_portfolio
- *  - create new portfolio: { userId, name, cash? }
- * GET /api/virtual_portfolio?userId=...
- *  - list portfolios
- * PUT /api/virtual_portfolio/:id   // update portfolio (add/remove sip)
- * DELETE /api/virtual_portfolio/:id
- */
-
-// For development: use in-memory storage instead of MongoDB
 const portfolioStorage = new Map<string, any[]>();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // await connect(); // Skip MongoDB connection for development
   const method = req.method;
 
   if (method === "GET") {
     const userId = String(req.query.userId || "");
     if (!userId) return res.status(400).json({ error: "userId required" });
 
-    // Get portfolios from in-memory storage
     const ports = portfolioStorage.get(userId) || [];
-
-    // For development: return mock enriched data
     const enriched = ports.map((p: any) => ({
       ...p,
       sips: p.sips.map((s: any) => ({
         ...s,
-        currentNAV: 100 + Math.random() * 50, // Mock NAV data
+        currentNAV: 100 + Math.random() * 50,
       })),
     }));
 
@@ -40,7 +25,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { userId, name, cash } = req.body;
     if (!userId) return res.status(400).json({ error: "userId required" });
 
-    // Create portfolio in in-memory storage
     const portfolioId = Date.now().toString();
     const portfolio = {
       _id: portfolioId,
@@ -64,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { id, action, payload } = req.body;
     if (!id || !action) return res.status(400).json({ error: "id and action required" });
 
-    const userId = "default-user"; // For development
+    const userId = "default-user";
     const portfolios = portfolioStorage.get(userId) || [];
     const portIndex = portfolios.findIndex((p: any) => p._id === id);
 
@@ -100,7 +84,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { id } = req.body;
     if (!id) return res.status(400).json({ error: "id required" });
 
-    const userId = "default-user"; // For development
+    const userId = "default-user";
     const portfolios = portfolioStorage.get(userId) || [];
     const filteredPortfolios = portfolios.filter((p: any) => p._id !== id);
     portfolioStorage.set(userId, filteredPortfolios);
