@@ -10,6 +10,8 @@ import {
   Alert,
   CircularProgress,
   Divider,
+  useTheme,
+  alpha,
 } from '@mui/material';
 import axios from 'axios';
 import { LumpsumResponse } from '@/types';
@@ -20,6 +22,7 @@ interface LumpsumCalculatorProps {
 }
 
 export default function LumpsumCalculator({ schemeCode }: LumpsumCalculatorProps) {
+  const theme = useTheme();
   const [amount, setAmount] = useState('100000');
   const [fromDate, setFromDate] = useState('2020-01-01');
   const [toDate, setToDate] = useState(new Date().toISOString().split('T')[0]);
@@ -52,14 +55,29 @@ export default function LumpsumCalculator({ schemeCode }: LumpsumCalculatorProps
   };
 
   return (
-    <Card>
-      <CardContent>
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: 600 }}>
-          Lumpsum Calculator
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          Calculate returns for one-time investment
-        </Typography>
+    <Card sx={{
+      borderRadius: 3,
+      border: '1px solid',
+      borderColor: 'rgba(0,0,0,0.08)',
+      boxShadow: '0 2px 12px rgba(0, 0, 0, 0.08)',
+    }}>
+      <CardContent sx={{ p: 4 }}>
+        <Box sx={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2,
+          mb: 3,
+          p: 2,
+          bgcolor: `linear-gradient(135deg, ${alpha(theme.palette.success.main, 0.08)} 0%, ${alpha(theme.palette.info.main, 0.08)} 100%)`,
+          borderRadius: 2,
+        }}>
+          <Typography variant="h5" sx={{ fontWeight: 800, color: 'text.primary' }}>
+            🎯 Lumpsum Calculator
+          </Typography>
+          <Typography variant="body2" sx={{ color: 'text.secondary', fontWeight: 500 }}>
+            Calculate returns for one-time investment
+          </Typography>
+        </Box>
 
         <Grid container spacing={2}>
           <Grid item xs={12}>
