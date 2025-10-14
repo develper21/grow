@@ -1,4 +1,3 @@
-// src/models/Fund.ts
 import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface INavPoint {
@@ -7,13 +6,13 @@ export interface INavPoint {
 }
 
 export interface IFund extends Document {
-  schemeCode: string;       // unique code
+  schemeCode: string; 
   name: string;
   category?: string;
   isActive: boolean;
   currentNAV?: number;
   currentNAVDate?: Date;
-  navHistory: INavPoint[];  // descending or ascending - we store points
+  navHistory: INavPoint[]; 
   updatedAt: Date;
 }
 
