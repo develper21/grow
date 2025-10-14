@@ -113,7 +113,7 @@ export const theme = createTheme({
     },
   },
   shape: {
-    borderRadius: 16,
+    borderRadius: 12,
   },
   shadows: [
     'none',
@@ -146,23 +146,23 @@ export const theme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: 12,
-          padding: '12px 32px',
-          fontSize: '0.95rem',
+          borderRadius: 8, // Reduced from 12 to 8
+          padding: '10px 24px',
+          fontSize: '0.9rem',
           fontWeight: 600,
           textTransform: 'none',
           letterSpacing: '0.025em',
           boxShadow: 'none',
           '&:hover': {
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.12)',
             transform: 'translateY(-1px)',
           },
           transition: 'all 0.2s ease-in-out',
         },
         contained: {
-          boxShadow: '0 2px 4px rgba(37, 99, 235, 0.2)',
+          boxShadow: '0 1px 3px rgba(37, 99, 235, 0.2)',
           '&:hover': {
-            boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
+            boxShadow: '0 3px 8px rgba(37, 99, 235, 0.3)',
           },
         },
         outlined: {
@@ -176,10 +176,10 @@ export const theme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
-          borderRadius: 20,
+          borderRadius: 16,
           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
           '&:hover': {
-            boxShadow: '0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
+            boxShadow: '0 8px 20px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
             transform: 'translateY(-2px)',
           },
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -191,7 +191,7 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiOutlinedInput-root': {
-            borderRadius: 12,
+            borderRadius: 8,
             backgroundColor: '#fff',
             '& fieldset': {
               borderWidth: '1.5px',
