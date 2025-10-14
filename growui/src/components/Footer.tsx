@@ -65,7 +65,6 @@ export default function Footer() {
     >
       <Container maxWidth="lg">
         <Grid container spacing={6}>
-          {/* Brand Section */}
           <Grid item xs={12} md={4}>
             <Box>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
@@ -112,7 +111,6 @@ export default function Footer() {
             </Box>
           </Grid>
 
-          {/* Links Sections */}
           <Grid item xs={12} md={8}>
             <Grid container spacing={4}>
               <Grid item xs={6} sm={3}>
@@ -224,7 +222,6 @@ export default function Footer() {
 
         <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.1)' }} />
 
-        {/* Bottom Section */}
         <Box
           sx={{
             display: 'flex',
