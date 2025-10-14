@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -14,9 +14,18 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  Avatar,
+  Menu,
+  MenuItem,
+  Divider,
+  Chip,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import PersonIcon from "@mui/icons-material/Person";
+import LogoutIcon from "@mui/icons-material/Logout";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { useRouter } from "next/router";
 
 interface NavbarProps {
@@ -33,10 +42,35 @@ export default function Navbar({ navItems = [
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [profileAnchor, setProfileAnchor] = useState<null | HTMLElement>(null);
+
+  useEffect(() => {
+    // Check if user is logged in
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
 
   const handleNavigation = (path: string) => {
     router.push(path);
     setDrawerOpen(false);
+  };
+
+  const handleProfileClick = (event: React.MouseEvent<HTMLElement>) => {
+    setProfileAnchor(event.currentTarget);
+  };
+
+  const handleProfileClose = () => {
+    setProfileAnchor(null);
+  };
+
+  const handleSignOut = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    setProfileAnchor(null);
+    router.push('/');
   };
 
   return (
@@ -77,18 +111,32 @@ export default function Navbar({ navItems = [
           </Typography>
 
           {isMobile ? (
-            <IconButton
-              edge="end"
-              onClick={() => setDrawerOpen(true)}
-              sx={{
-                color: "text.primary",
-                "&:hover": {
-                  backgroundColor: "rgba(0, 0, 0, 0.04)",
-                }
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              {user && (
+                <Chip
+                  avatar={<Avatar sx={{ width: 24, height: 24, fontSize: '0.8rem' }}>{user.name.charAt(0).toUpperCase()}</Avatar>}
+                  label={user.name}
+                  size="small"
+                  sx={{
+                    bgcolor: alpha(theme.palette.primary.main, 0.1),
+                    color: 'primary.main',
+                    fontWeight: 600,
+                  }}
+                />
+              )}
+              <IconButton
+                edge="end"
+                onClick={() => setDrawerOpen(true)}
+                sx={{
+                  color: "text.primary",
+                  "&:hover": {
+                    backgroundColor: "rgba(0, 0, 0, 0.04)",
+                  }
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Box>
           ) : (
             <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
               {navItems.map((item) => (
@@ -128,12 +176,98 @@ export default function Navbar({ navItems = [
                   {item.label}
                 </Button>
               ))}
+
+              {/* User Profile Section */}
+              {user ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  <Chip
+                    avatar={<Avatar sx={{ width: 28, height: 28, fontSize: '0.9rem' }}>{user.name.charAt(0).toUpperCase()}</Avatar>}
+                    label={user.name}
+                    sx={{
+                      bgcolor: alpha(theme.palette.primary.main, 0.1),
+                      color: 'primary.main',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                    }}
+                    onClick={handleProfileClick}
+                  />
+                  <Menu
+                    anchorEl={profileAnchor}
+                    open={Boolean(profileAnchor)}
+                    onClose={handleProfileClose}
+                    PaperProps={{
+                      sx: {
+                        mt: 1,
+                        minWidth: 200,
+                        borderRadius: 2,
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+                      }
+                    }}
+                  >
+                    <Box sx={{ p: 2, textAlign: 'center' }}>
+                      <Avatar sx={{
+                        width: 48,
+                        height: 48,
+                        mx: 'auto',
+                        mb: 1,
+                        fontSize: '1.2rem',
+                        bgcolor: 'primary.main'
+                      }}>
+                        {user.name.charAt(0).toUpperCase()}
+                      </Avatar>
+                      <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                        {user.name}
+                      </Typography>
+                      <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                        {user.email}
+                      </Typography>
+                    </Box>
+                    <Divider />
+                    <MenuItem onClick={() => { handleProfileClose(); router.push('/settings'); }}>
+                      <SettingsIcon sx={{ mr: 1, fontSize: 18 }} />
+                      Settings
+                    </MenuItem>
+                    <MenuItem onClick={handleSignOut}>
+                      <LogoutIcon sx={{ mr: 1, fontSize: 18 }} />
+                      Sign Out
+                    </MenuItem>
+                  </Menu>
+                </Box>
+              ) : (
+                <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Button
+                    variant="outlined"
+                    onClick={() => router.push('/signin')}
+                    sx={{
+                      borderRadius: 2,
+                      px: 3,
+                      py: 1,
+                      fontSize: '0.85rem',
+                      textTransform: 'none',
+                    }}
+                  >
+                    Sign In
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={() => router.push('/signup')}
+                    sx={{
+                      borderRadius: 2,
+                      px: 3,
+                      py: 1,
+                      fontSize: '0.85rem',
+                      textTransform: 'none',
+                    }}
+                  >
+                    Sign Up
+                  </Button>
+                </Box>
+              )}
             </Box>
           )}
         </Toolbar>
       </AppBar>
 
-      {/* Mobile Drawer */}
       <Drawer
         anchor="right"
         open={drawerOpen}
@@ -147,6 +281,52 @@ export default function Navbar({ navItems = [
         }}
       >
         <Box sx={{ p: 2 }}>
+          {/* User Profile Section */}
+          {user ? (
+            <Box sx={{ textAlign: 'center', mb: 3, p: 2, bgcolor: 'rgba(255, 255, 255, 0.8)', borderRadius: 2 }}>
+              <Avatar sx={{
+                width: 48,
+                height: 48,
+                mx: 'auto',
+                mb: 1,
+                fontSize: '1.2rem',
+                bgcolor: 'primary.main'
+              }}>
+                {user.name.charAt(0).toUpperCase()}
+              </Avatar>
+              <Typography variant="body2" sx={{ fontWeight: 600, mb: 0.5 }}>
+                {user.name}
+              </Typography>
+              <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+                {user.email}
+              </Typography>
+            </Box>
+          ) : (
+            <Box sx={{ textAlign: 'center', mb: 3 }}>
+              <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
+                Sign in to access all features
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Button
+                  variant="outlined"
+                  size="small"
+                  onClick={() => { setDrawerOpen(false); router.push('/signin'); }}
+                  sx={{ borderRadius: 2 }}
+                >
+                  Sign In
+                </Button>
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={() => { setDrawerOpen(false); router.push('/signup'); }}
+                  sx={{ borderRadius: 2 }}
+                >
+                  Sign Up
+                </Button>
+              </Box>
+            </Box>
+          )}
+
           <Typography variant="h6" sx={{ mb: 3, textAlign: "center", fontWeight: 700 }}>
             Navigation
           </Typography>
@@ -183,6 +363,40 @@ export default function Navbar({ navItems = [
                 </ListItemButton>
               </ListItem>
             ))}
+
+            {user && (
+              <>
+                <Divider sx={{ my: 2 }} />
+                <ListItem disablePadding sx={{ mb: 1 }}>
+                  <ListItemButton
+                    onClick={() => { handleNavigation('/settings'); setDrawerOpen(false); }}
+                    sx={{ borderRadius: 2 }}
+                  >
+                    <ListItemText
+                      primary="Settings"
+                      sx={{ textAlign: "center" }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding sx={{ mb: 1 }}>
+                  <ListItemButton
+                    onClick={handleSignOut}
+                    sx={{
+                      borderRadius: 2,
+                      color: 'error.main',
+                      '&:hover': {
+                        backgroundColor: alpha(theme.palette.error.main, 0.1),
+                      },
+                    }}
+                  >
+                    <ListItemText
+                      primary="Sign Out"
+                      sx={{ textAlign: "center" }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              </>
+            )}
           </List>
         </Box>
       </Drawer>
