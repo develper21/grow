@@ -111,7 +111,6 @@ export default function CommissionDashboard({ userRole }: CommissionDashboardPro
     try {
       setLoading(true);
 
-      // Fetch monthly commission data
       const [monthlyRes, availableRes, estimateRes] = await Promise.all([
         fetch('/api/commissions/monthly'),
         fetch('/api/commissions/available'),
@@ -147,7 +146,6 @@ export default function CommissionDashboard({ userRole }: CommissionDashboardPro
       });
 
       if (response.ok) {
-        // Refresh data
         await fetchCommissionData();
         setSelectedCommissions([]);
       }
@@ -193,7 +191,6 @@ export default function CommissionDashboard({ userRole }: CommissionDashboardPro
         </Typography>
       </Box>
 
-      {/* Current Month Summary */}
       {commissionData && (
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} md={3}>
@@ -266,7 +263,6 @@ export default function CommissionDashboard({ userRole }: CommissionDashboardPro
       )}
 
       <Grid container spacing={3}>
-        {/* Historical Chart */}
         <Grid item xs={12} lg={8}>
           <Card>
             <CardContent>
@@ -293,7 +289,6 @@ export default function CommissionDashboard({ userRole }: CommissionDashboardPro
           </Card>
         </Grid>
 
-        {/* Available for Withdrawal */}
         <Grid item xs={12} lg={4}>
           <Card>
             <CardContent>
@@ -352,7 +347,6 @@ export default function CommissionDashboard({ userRole }: CommissionDashboardPro
         </Grid>
       </Grid>
 
-      {/* Commission Estimate */}
       {commissionEstimate && (
         <Card sx={{ mt: 3 }}>
           <CardContent>
@@ -398,7 +392,6 @@ export default function CommissionDashboard({ userRole }: CommissionDashboardPro
         </Card>
       )}
 
-      {/* Recent Transactions */}
       {commissionData && commissionData.recentCommissions.length > 0 && (
         <Card sx={{ mt: 3 }}>
           <CardContent>
