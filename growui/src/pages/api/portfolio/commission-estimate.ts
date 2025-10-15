@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const { userId, role } = session.user;
+    const { id: userId, role } = session.user || { id: '', role: '' };
 
     // Get user's portfolios
     const portfolios = await VirtualPortfolio.find({ userId });
@@ -37,19 +37,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    // Get company settings for commission rate
     let companyId = null;
     if (role === 'customer') {
       const user = await User.findById(userId);
       companyId = user?.companyId;
     } else {
-      companyId = userId; // For company heads, admins, sellers
+      companyId = userId;
     }
 
     const company = await Company.findOne({ headId: companyId });
     const annualRate = company?.settings?.annualCommissionRate || 2.0;
 
-    // Calculate projections for each portfolio
     const portfolioProjections = portfolios.map(portfolio => {
       const currentValue = portfolio.totalValue || 0;
       const calculation = calculateMonthlyCommission(currentValue, annualRate);
