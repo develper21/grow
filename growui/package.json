@@ -2,14 +2,18 @@
   "name": "mutual-fund-explorer",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "cron": "node -e \"require('./src/scripts/cron.ts')\""
+    "cron": "node -e \"require('./src/scripts/cron.ts')\"",
+    "process-commissions": "tsx src/scripts/processMonthlyCommissions.ts",
+    "seed-users": "tsx src/scripts/seedUsers.ts"
   },
   "dependencies": {
+    "@auth/mongodb-adapter": "^3.11.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.15",
@@ -17,11 +21,13 @@
     "@mui/x-charts": "^7.3.1",
     "@mui/x-date-pickers": "^7.3.1",
     "axios": "^1.12.2",
+    "bcryptjs": "^3.0.2",
     "chart.js": "^4.5.1",
     "chartjs-adapter-date-fns": "^3.0.0",
     "date-fns": "^3.6.0",
     "mongoose": "^8.19.1",
     "next": "^14.2.33",
+    "next-auth": "^4.24.11",
     "node-cron": "^4.2.1",
     "react": "^18.3.1",
     "react-chartjs-2": "^5.3.0",
@@ -34,6 +40,7 @@
     "@types/react-dom": "^18.3.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.3",
+    "tsx": "^4.20.6",
     "typescript": "^5.4.5"
   }
 }
