@@ -1,10 +1,5 @@
-import { processMonthlyCommissions } from '@/utils/commissionCalculator';
-import dbConnect from '@/utils/db';
-
-/**
- * Cron job script to process monthly commission calculations
- * Should be run on the 1st of each month at 12:01 AM
- */
+import { processMonthlyCommissions } from '../utils/commissionCalculator';
+import dbConnect from '../utils/db';
 
 async function runMonthlyCommissionProcess() {
   try {
@@ -15,21 +10,21 @@ async function runMonthlyCommissionProcess() {
 
     console.log('Monthly commission processing completed:', result);
 
-    if (result.success) {
-      console.log(`✅ Successfully processed ${result.recordsCreated} commission records`);
+    if (result?.success) {
+      console.log(`Successfully processed ${result.recordsCreated} commission records`);
     } else {
-      console.log('❌ Commission processing failed');
+      console.log('Commission processing failed');
     }
 
-    process.exit(result.success ? 0 : 1);
+    process.exit(result?.success ? 0 : 1);
   } catch (error) {
-    console.error('❌ Error in monthly commission processing:', error);
+    console.error('Error in monthly commission processing:', error);
     process.exit(1);
   }
 }
 
-// Run if called directly
-if (require.main === module) {
+// Run if this is the main module
+if (import.meta.url === `file://${process.argv[1]}`) {
   runMonthlyCommissionProcess();
 }
 
