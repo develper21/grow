@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import { Visibility, VisibilityOff, Email, Lock } from '@mui/icons-material';
 import { useRouter } from 'next/router';
+import { signIn, getSession } from 'next-auth/react';
 
 export default function SignIn() {
   const theme = useTheme();
@@ -43,17 +44,37 @@ export default function SignIn() {
     setError('');
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const result = await signIn('credentials', {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
+      });
 
-      if (formData.email && formData.password) {
-        localStorage.setItem('user', JSON.stringify({
-          email: formData.email,
-          name: formData.email.split('@')[0],
-        }));
-
-        router.push('/');
-      } else {
-        setError('Please enter both email and password');
+      if (result?.error) {
+        setError('Invalid credentials. Please try again.');
+      } else if (result?.ok) {
+        // Check user role and redirect accordingly
+        const session = await getSession();
+        if (session?.user) {
+          switch (session.user.role) {
+            case 'company_head':
+              router.push('/company-head/dashboard');
+              break;
+            case 'admin':
+              router.push('/admin/dashboard');
+              break;
+            case 'seller':
+              router.push('/seller/dashboard');
+              break;
+            case 'customer':
+              router.push('/customer/dashboard');
+              break;
+            default:
+              router.push('/');
+          }
+        } else {
+          router.push('/');
+        }
       }
     } catch (err) {
       setError('Sign in failed. Please try again.');
