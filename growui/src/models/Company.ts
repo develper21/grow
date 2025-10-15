@@ -3,17 +3,17 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 export interface ICommissionSlab {
   minAmount: number;
   maxAmount: number;
-  rate: number; // Annual percentage
+  rate: number;
   description: string;
 }
 
 export interface ICompany extends Document {
   name: string;
-  headId: string; // Company Head user ID
+  headId: string;
   commissionSlabs: ICommissionSlab[];
   settings: {
-    annualCommissionRate: number; // 2% default
-    monthlyPayoutDay: number; // Day 5 default
+    annualCommissionRate: number;
+    monthlyPayoutDay: number;
     minWithdrawalAmount: number;
     maxWithdrawalAmount: number;
   };
@@ -34,8 +34,8 @@ const CompanySchema = new Schema<ICompany>({
   headId: { type: String, required: true, index: true },
   commissionSlabs: { type: [CommissionSlabSchema], default: [] },
   settings: {
-    annualCommissionRate: { type: Number, default: 2.0 }, // 2% annual
-    monthlyPayoutDay: { type: Number, default: 5 }, // Day 5
+    annualCommissionRate: { type: Number, default: 2.0 },
+    monthlyPayoutDay: { type: Number, default: 5 },
     minWithdrawalAmount: { type: Number, default: 100 },
     maxWithdrawalAmount: { type: Number, default: 100000 }
   },
