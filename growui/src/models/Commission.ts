@@ -4,17 +4,17 @@ export type CommissionStatus = "accrued" | "available" | "withdrawn" | "cancelle
 
 export interface ICommission extends Document {
   period: {
-    month: number; // 1-12
-    year: number;  // e.g., 2024
+    month: number;
+    year: number;
   };
   customerId: string;
   sellerId: string;
   adminId: string;
   companyId: string;
-  portfolioValue: number; // Current portfolio value at calculation time
-  annualRate: number; // 2% annual rate
-  monthlyRate: number; // 0.1667% monthly rate
-  totalCommission: number; // Total monthly commission amount
+  portfolioValue: number;
+  annualRate: number;
+  monthlyRate: number;
+  totalCommission: number;
   breakdown: {
     company: number;
     admin: number;
@@ -22,8 +22,8 @@ export interface ICommission extends Document {
     mutualFund: number;
   };
   status: CommissionStatus;
-  withdrawalDate?: Date; // When it becomes available for withdrawal
-  withdrawnAt?: Date; // When actually withdrawn
+  withdrawalDate?: Date;
+  withdrawnAt?: Date;
   generatedAt: Date;
   metadata?: {
     calculationMethod: string;
@@ -67,7 +67,6 @@ const CommissionSchema = new Schema<ICommission>({
   }
 });
 
-// Compound indexes for efficient queries
 CommissionSchema.index({ customerId: 1, period: 1 });
 CommissionSchema.index({ sellerId: 1, period: 1, status: 1 });
 CommissionSchema.index({ adminId: 1, period: 1, status: 1 });
