@@ -8,8 +8,8 @@ export interface IUser extends Document {
   password: string;
   name: string;
   role: UserRole;
-  parentId?: string; // For admin/seller hierarchy
-  companyId?: string; // For company association
+  parentId?: string;
+  companyId?: string;
   isActive: boolean;
   kycStatus?: "pending" | "approved" | "rejected";
   kycDocuments?: string[];
@@ -31,7 +31,7 @@ const UserSchema = new Schema<IUser>({
     enum: ["company_head", "admin", "seller", "customer"],
     required: true
   },
-  parentId: { type: String, index: true }, // For hierarchy (admin for sellers, company for admins)
+  parentId: { type: String, index: true },
   companyId: { type: String, index: true },
   isActive: { type: Boolean, default: true },
   kycStatus: {
