@@ -20,16 +20,12 @@ export interface CommissionCalculationResult {
   };
 }
 
-/**
- * Calculate monthly commission for a single portfolio
- * Based on 2% annual commission with monthly payouts
- */
 export function calculateMonthlyCommission(
   portfolioValue: number,
-  annualRate: number = 2.0 // 2% annual
+  annualRate: number = 2.0
 ): CommissionCalculationResult {
-  const monthlyRate = annualRate / 12; // Convert to monthly
-  const shareAnnualRate = annualRate / 4; // 0.5% each for 4 stakeholders
+  const monthlyRate = annualRate / 12;
+  const shareAnnualRate = annualRate / 4;
   const shareMonthlyRate = shareAnnualRate / 12;
 
   const totalMonthlyCommission = portfolioValue * (monthlyRate / 100);
@@ -47,28 +43,22 @@ export function calculateMonthlyCommission(
       mutualFund: shareAmount
     },
     period: {
-      month: new Date().getMonth() + 1, // Current month (1-12)
+      month: new Date().getMonth() + 1,
       year: new Date().getFullYear()
     }
   };
 }
 
-/**
- * Process monthly commission calculation for all active portfolios
- * This should be run on the 1st of each month
- */
 export async function processMonthlyCommissions() {
   try {
     console.log('Starting monthly commission calculation...');
 
-    // Get current period
     const now = new Date();
     const currentPeriod = {
       month: now.getMonth() + 1,
       year: now.getFullYear()
     };
 
-    // Check if commissions for this period already exist
     const existingCommissions = await Commission.countDocuments({
       'period.month': currentPeriod.month,
       'period.year': currentPeriod.year
@@ -79,7 +69,6 @@ export async function processMonthlyCommissions() {
       return;
     }
 
-    // Get all active portfolios
     const portfolios = await VirtualPortfolio.find({}).populate('userId');
 
     console.log(`Processing ${portfolios.length} portfolios...`);
@@ -89,32 +78,25 @@ export async function processMonthlyCommissions() {
     for (const portfolio of portfolios) {
       if (portfolio.totalValue <= 0) continue;
 
-      // Get user details for hierarchy
       const user = portfolio.userId as any;
-      if (!user || user.role !== 'customer') continue;
+      if (!user || (user as any).role !== 'customer') continue;
 
-      // Get seller and admin from hierarchy
       let sellerId = user._id;
       let adminId = user.parentId;
       let companyId = user.companyId;
 
-      // If user is customer, get their seller
-      if (user.role === 'customer') {
-        // For now, assume seller is the parent, need to implement proper hierarchy
+      if ((user as any).role === 'customer') {
         sellerId = user.parentId || user._id;
       }
 
-      // Get company settings
       const company = await Company.findOne({ headId: companyId });
       if (!company) continue;
 
-      // Calculate commission
       const calculation = calculateMonthlyCommission(
         portfolio.totalValue,
         company.settings.annualCommissionRate
       );
 
-      // Create commission record for each stakeholder
       const stakeholders = [
         { id: companyId, type: 'company', amount: calculation.breakdown.company },
         { id: adminId, type: 'admin', amount: calculation.breakdown.admin },
@@ -150,7 +132,6 @@ export async function processMonthlyCommissions() {
       }
     }
 
-    // Bulk insert all commission records
     if (commissionRecords.length > 0) {
       await Commission.insertMany(commissionRecords);
       console.log(`Created ${commissionRecords.length} commission records`);
@@ -163,9 +144,6 @@ export async function processMonthlyCommissions() {
   }
 }
 
-/**
- * Get commission summary for a user
- */
 export async function getUserCommissionSummary(
   userId: string,
   userRole: string,
@@ -180,7 +158,6 @@ export async function getUserCommissionSummary(
 
     let matchConditions: any = {};
 
-    // Different query based on user role
     switch (userRole) {
       case 'company_head':
         matchConditions.companyId = userId;
@@ -226,9 +203,6 @@ export async function getUserCommissionSummary(
   }
 }
 
-/**
- * Get available commissions for withdrawal
- */
 export async function getAvailableCommissions(userId: string, userRole: string) {
   try {
     const now = new Date();
@@ -263,9 +237,6 @@ export async function getAvailableCommissions(userId: string, userRole: string) 
   }
 }
 
-/**
- * Process commission withdrawal
- */
 export async function processCommissionWithdrawal(
   commissionIds: string[],
   userId: string,
@@ -274,7 +245,6 @@ export async function processCommissionWithdrawal(
   try {
     const now = new Date();
 
-    // Verify commissions belong to user and are available
     const matchConditions: any = {
       _id: { $in: commissionIds },
       status: 'available',
@@ -317,9 +287,6 @@ export async function processCommissionWithdrawal(
   }
 }
 
-/**
- * Get commission history for a user
- */
 export async function getCommissionHistory(
   userId: string,
   userRole: string,

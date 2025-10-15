@@ -13,8 +13,11 @@ if (!cached) {
   (global as any).mongooseConnection = mongoose;
 }
 
-export async function connect() {
+async function connect() {
   if (mongoose.connection.readyState >= 1) return mongoose;
   await mongoose.connect(MONGODB_URI);
   return mongoose;
 }
+
+export default connect;
+export { connect };
