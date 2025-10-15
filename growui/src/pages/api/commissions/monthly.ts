@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const { userId, role } = session.user;
+    const { id: userId, role } = session.user || { id: '', role: '' };
     const { period, limit = 12, offset = 0 } = req.query;
 
     let targetPeriod;
@@ -26,10 +26,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       targetPeriod = { month, year };
     }
 
-    // Get current month summary
     const currentMonthSummary = await getUserCommissionSummary(userId, role, targetPeriod);
 
-    // Get historical data for the last 12 months
     const historicalData = [];
     const now = new Date();
 
@@ -49,7 +47,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
     }
 
-    // Get recent commission records
     const recentCommissions = await getCommissionHistory(
       userId,
       role,

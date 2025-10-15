@@ -17,12 +17,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const { userId, role } = session.user;
-
-    // Get available commissions for withdrawal
+    const { id: userId, role } = session.user || { id: '', role: '' };
     const availableCommissions = await getAvailableCommissions(userId, role);
-
-    // Calculate totals
     const totalAvailable = availableCommissions.reduce((sum, commission) => {
       let userShare = 0;
       switch (role) {
@@ -42,7 +38,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return sum + userShare;
     }, 0);
 
-    // Group by period for better display
     const groupedByPeriod = availableCommissions.reduce((acc, commission) => {
       const periodKey = `${commission.period.month}/${commission.period.year}`;
       if (!acc[periodKey]) {

@@ -17,32 +17,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
-    const { userId, role } = session.user;
+    const { id: userId, role } = session.user || { id: '', role: '' };
     const { commissionIds } = req.body;
 
     if (!commissionIds || !Array.isArray(commissionIds) || commissionIds.length === 0) {
       return res.status(400).json({ message: 'Commission IDs are required' });
     }
 
-    // Verify user has access to these commissions and they are available for withdrawal
     const availableCommissions = await getAvailableCommissions(userId, role);
 
     const validCommissionIds = availableCommissions
-      .filter(commission => commissionIds.includes(commission._id.toString()))
-      .map(commission => commission._id.toString());
+      .filter(commission => commissionIds.includes((commission._id as any).toString()))
+      .map(commission => (commission._id as any).toString());
 
     if (validCommissionIds.length === 0) {
       return res.status(400).json({ message: 'No valid commissions found for withdrawal' });
     }
 
-    // Process the withdrawal
     const result = await processCommissionWithdrawal(validCommissionIds, userId, role);
 
     if (!result.success) {
       return res.status(500).json({ message: 'Failed to process withdrawal' });
     }
 
-    // Get updated available commissions after withdrawal
     const updatedAvailable = await getAvailableCommissions(userId, role);
 
     return res.status(200).json({
