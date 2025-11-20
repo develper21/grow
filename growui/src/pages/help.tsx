@@ -411,7 +411,7 @@ export default function HelpCenterPage() {
             /* Search Results */
             <Box>
               <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
-                Search Results for "{searchQuery}"
+                Search Results for &quot;{searchQuery}&quot;
               </Typography>
 
               {filteredFAQs.length === 0 ? (
