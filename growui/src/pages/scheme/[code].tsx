@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Container,
   Box,
@@ -71,14 +71,7 @@ export default function SchemeDetailPage() {
     { period: '5 Years', returns: null, loading: true },
   ]);
 
-  useEffect(() => {
-    if (code) {
-      fetchSchemeDetails();
-      fetchReturns();
-    }
-  }, [code]);
-
-  const fetchSchemeDetails = async () => {
+  const fetchSchemeDetails = useCallback(async () => {
     try {
       setLoading(true);
       const response = await axios.get(`/api/scheme/${code}`);
@@ -89,9 +82,9 @@ export default function SchemeDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [code]);
 
-  const fetchReturns = async () => {
+  const fetchReturns = useCallback(async () => {
     const periods = ['1m', '3m', '6m', '1y', '3y', '5y'];
     const labels = ['1 Month', '3 Months', '6 Months', '1 Year', '3 Years', '5 Years'];
 
@@ -117,7 +110,14 @@ export default function SchemeDetailPage() {
         });
       }
     }
-  };
+  }, [code]);
+
+  useEffect(() => {
+    if (code) {
+      fetchSchemeDetails();
+      fetchReturns();
+    }
+  }, [code, fetchSchemeDetails, fetchReturns]);
 
   if (loading) {
     return (
