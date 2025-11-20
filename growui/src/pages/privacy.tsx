@@ -163,7 +163,7 @@ export default function PrivacyPage() {
             <Divider sx={{ my: 4 }} />
 
             <Typography variant="h4" sx={{ fontWeight: 700, mb: 4, color: 'text.primary' }}>
-              8. Children's Privacy
+              8. Children&apos;s Privacy
             </Typography>
             <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4, lineHeight: 1.8 }}>
               Our services are not intended for children under 18 years of age. We do not knowingly collect personal information from children under 18. If you are a parent or guardian and believe your child has provided us with personal information, please contact us.
@@ -175,7 +175,7 @@ export default function PrivacyPage() {
               9. Changes to This Policy
             </Typography>
             <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4, lineHeight: 1.8 }}>
-              We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date.
+              We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the &quot;Last updated&quot; date.
             </Typography>
 
             <Divider sx={{ my: 4 }} />
