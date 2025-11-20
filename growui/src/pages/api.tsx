@@ -104,7 +104,7 @@ export default function APIPage() {
                   lineHeight: 1.6,
                 }}
               >
-                Integrate Grow's powerful mutual fund data into your applications
+                Integrate Grow&apos;s powerful mutual fund data into your applications
               </Typography>
             </Box>
           </Container>
