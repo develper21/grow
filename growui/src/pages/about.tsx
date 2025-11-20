@@ -201,7 +201,7 @@ export default function AboutPage() {
               Meet Our Team
             </Typography>
             <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 600, mx: 'auto' }}>
-              The passionate individuals behind Grow's mission to democratize financial education
+              The passionate individuals behind Grow&apos;s mission to democratize financial education
             </Typography>
           </Box>
 
