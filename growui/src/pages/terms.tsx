@@ -65,7 +65,7 @@ export default function TermsPage() {
               1. Acceptance of Terms
             </Typography>
             <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4, lineHeight: 1.8 }}>
-              By accessing and using Grow Fund Explorer ("the Service"), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
+              By accessing and using Grow Fund Explorer (&quot;the Service&quot;), you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
             </Typography>
 
             <Divider sx={{ my: 4 }} />
@@ -89,7 +89,7 @@ export default function TermsPage() {
               3. Disclaimer
             </Typography>
             <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4, lineHeight: 1.8 }}>
-              The materials on Grow Fund Explorer are provided on an 'as is' basis. Grow Fund Explorer makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
+              The materials on Grow Fund Explorer are provided on an &apos;as is&apos; basis. Grow Fund Explorer makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
             </Typography>
             <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4, lineHeight: 1.8 }}>
               Further, Grow Fund Explorer does not warrant or make any representations concerning the accuracy, likely results, or reliability of the use of the materials on its website or otherwise relating to such materials or on any sites linked to this site.
@@ -131,7 +131,7 @@ export default function TermsPage() {
               7. Links
             </Typography>
             <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4, lineHeight: 1.8 }}>
-              Grow Fund Explorer has not reviewed all of the sites linked to its website and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by Grow Fund Explorer of the site. Use of any such linked website is at the user's own risk.
+              Grow Fund Explorer has not reviewed all of the sites linked to its website and is not responsible for the contents of any such linked site. The inclusion of any link does not imply endorsement by Grow Fund Explorer of the site. Use of any such linked website is at the user&apos;s own risk.
             </Typography>
 
             <Divider sx={{ my: 4 }} />
