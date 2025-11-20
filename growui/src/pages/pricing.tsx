@@ -335,7 +335,7 @@ export default function PricingPage() {
                       Do you offer refunds?
                     </Typography>
                     <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                      Yes, we offer a 30-day money-back guarantee. If you're not satisfied, we'll refund your payment.
+                      Yes, we offer a 30-day money-back guarantee. If you&apos;re not satisfied, we&apos;ll refund your payment.
                     </Typography>
                   </CardContent>
                 </Card>
