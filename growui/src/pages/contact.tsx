@@ -124,7 +124,7 @@ export default function ContactPage() {
                   Get In Touch
                 </Typography>
                 <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4, lineHeight: 1.8 }}>
-                  We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+                  We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
                 </Typography>
 
                 <Stack spacing={4}>
@@ -163,7 +163,7 @@ export default function ContactPage() {
 
                   {success && (
                     <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>
-                      Thank you for your message! We'll get back to you soon.
+                      Thank you for your message! We&apos;ll get back to you soon.
                     </Alert>
                   )}
 
