@@ -80,7 +80,7 @@ export default function IntegrationsPage() {
                   lineHeight: 1.6,
                 }}
               >
-                Seamlessly integrate Grow's powerful mutual fund data into your applications
+                Seamlessly integrate Grow&apos;s powerful mutual fund data into your applications
               </Typography>
             </Box>
           </Container>
