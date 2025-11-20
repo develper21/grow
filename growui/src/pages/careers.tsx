@@ -96,7 +96,7 @@ export default function CareersPage() {
                 Why Join Grow?
               </Typography>
               <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4, lineHeight: 1.8 }}>
-                We're building the next generation of financial tools that will help millions of Indians make informed investment decisions. Join us in our mission to democratize financial education.
+                We&apos;re building the next generation of financial tools that will help millions of Indians make informed investment decisions. Join us in our mission to democratize financial education.
               </Typography>
 
               <Stack spacing={3}>
@@ -152,7 +152,7 @@ export default function CareersPage() {
                     Investors Using Our Platform
                   </Typography>
                   <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                    Join a team that's making a real impact on financial inclusion in India.
+                    Join a team that&apos;s making a real impact on financial inclusion in India.
                   </Typography>
                 </CardContent>
               </Card>
