@@ -14,56 +14,65 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import CalculateIcon from '@mui/icons-material/Calculate';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 import SecurityIcon from '@mui/icons-material/Security';
 import SpeedIcon from '@mui/icons-material/Speed';
 import SupportIcon from '@mui/icons-material/Support';
 
-const features = [
+type PaletteColorKey = 'primary' | 'secondary' | 'success' | 'info' | 'warning' | 'error';
+
+type IconType = typeof SearchIcon;
+
+interface Feature {
+  Icon: IconType;
+  title: string;
+  description: string;
+  benefits: string[];
+  paletteColor: PaletteColorKey;
+}
+
+const features: Feature[] = [
   {
-    icon: <SearchIcon sx={{ fontSize: 48, color: 'primary.main' }} />,
+    Icon: SearchIcon,
     title: 'Smart Fund Discovery',
     description: 'AI-powered search through thousands of mutual funds with advanced filtering and comparison tools.',
     benefits: ['Real-time NAV data', 'Risk analysis', 'Performance tracking'],
-    color: 'primary.main',
+    paletteColor: 'primary',
   },
   {
-    icon: <CalculateIcon sx={{ fontSize: 48, color: 'primary.main' }} />,
+    Icon: CalculateIcon,
     title: 'Advanced Calculators',
     description: 'Precise SIP, Lumpsum, and SWP calculators with historical data and future projections.',
     benefits: ['Historical accuracy', 'Future projections', 'Goal planning'],
-    color: 'secondary.main',
+    paletteColor: 'secondary',
   },
   {
-    icon: <ShowChartIcon sx={{ fontSize: 48, color: 'primary.main' }} />,
+    Icon: ShowChartIcon,
     title: 'Interactive Analytics',
     description: 'Beautiful charts and visualizations to understand fund performance and market trends.',
     benefits: ['Interactive charts', 'Custom timeframes', 'Export reports'],
-    color: 'success.main',
+    paletteColor: 'success',
   },
   {
-    icon: <SecurityIcon sx={{ fontSize: 48, color: 'primary.main' }} />,
+    Icon: SecurityIcon,
     title: 'Portfolio Management',
     description: 'Create virtual portfolios, track watchlists, and monitor your investment performance.',
     benefits: ['Virtual portfolios', 'Watchlist tracking', 'Performance alerts'],
-    color: 'info.main',
+    paletteColor: 'info',
   },
   {
-    icon: <SpeedIcon sx={{ fontSize: 48, color: 'primary.main' }} />,
+    Icon: SpeedIcon,
     title: 'Real-time Updates',
     description: 'Get live NAV updates and market data to make informed investment decisions.',
     benefits: ['Live data feeds', 'Instant notifications', 'Market alerts'],
-    color: 'warning.main',
+    paletteColor: 'warning',
   },
   {
-    icon: <SupportIcon sx={{ fontSize: 48, color: 'primary.main' }} />,
+    Icon: SupportIcon,
     title: 'Expert Support',
     description: '24/7 customer support and educational resources to help you succeed.',
     benefits: ['Expert guidance', 'Learning resources', 'Community forum'],
-    color: 'error.main',
+    paletteColor: 'error',
   },
 ];
 
@@ -125,57 +134,62 @@ export default function FeaturesPage() {
         {/* Features Grid */}
         <Container maxWidth="lg" sx={{ py: { xs: 8, md: 12 }, px: { xs: 2, md: 3 } }}>
           <Grid container spacing={4}>
-            {features.map((feature, index) => (
-              <Grid item xs={12} md={6} key={index}>
-                <Card
-                  sx={{
-                    height: '100%',
-                    p: 3,
-                    borderRadius: 4,
-                    transition: 'all 0.3s ease',
-                    border: '1px solid',
-                    borderColor: 'rgba(0, 0, 0, 0.08)',
-                    '&:hover': {
-                      transform: 'translateY(-8px)',
-                      boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
-                      borderColor: feature.color,
-                    },
-                  }}
-                >
-                  <CardContent sx={{ p: 0 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 3 }}>
-                      <Box sx={{ mr: 3, color: feature.color }}>
-                        {feature.icon}
+            {features.map((feature, index) => {
+              const paletteEntry = theme.palette[feature.paletteColor];
+              const paletteColor = paletteEntry?.main ?? theme.palette.primary.main;
+
+              return (
+                <Grid item xs={12} md={6} key={index}>
+                  <Card
+                    sx={{
+                      height: '100%',
+                      p: 3,
+                      borderRadius: 4,
+                      transition: 'all 0.3s ease',
+                      border: '1px solid',
+                      borderColor: 'rgba(0, 0, 0, 0.08)',
+                      '&:hover': {
+                        transform: 'translateY(-8px)',
+                        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+                        borderColor: paletteColor,
+                      },
+                    }}
+                  >
+                    <CardContent sx={{ p: 0 }}>
+                      <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 3 }}>
+                        <Box sx={{ mr: 3, color: paletteColor }}>
+                          <feature.Icon sx={{ fontSize: 48, color: paletteColor }} />
+                        </Box>
+                        <Box sx={{ flexGrow: 1 }}>
+                          <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: 'text.primary' }}>
+                            {feature.title}
+                          </Typography>
+                          <Typography variant="body1" sx={{ color: 'text.secondary', mb: 3, lineHeight: 1.7 }}>
+                            {feature.description}
+                          </Typography>
+                          <Stack direction="row" spacing={1} flexWrap="wrap">
+                            {feature.benefits.map((benefit, idx) => (
+                              <Chip
+                                key={idx}
+                                label={benefit}
+                                size="small"
+                                variant="outlined"
+                                sx={{
+                                  fontSize: '0.8rem',
+                                  color: paletteColor,
+                                  borderColor: alpha(paletteColor, 0.3),
+                                  bgcolor: alpha(paletteColor, 0.05),
+                                }}
+                              />
+                            ))}
+                          </Stack>
+                        </Box>
                       </Box>
-                      <Box sx={{ flexGrow: 1 }}>
-                        <Typography variant="h5" sx={{ fontWeight: 700, mb: 2, color: 'text.primary' }}>
-                          {feature.title}
-                        </Typography>
-                        <Typography variant="body1" sx={{ color: 'text.secondary', mb: 3, lineHeight: 1.7 }}>
-                          {feature.description}
-                        </Typography>
-                        <Stack direction="row" spacing={1} flexWrap="wrap">
-                          {feature.benefits.map((benefit, idx) => (
-                            <Chip
-                              key={idx}
-                              label={benefit}
-                              size="small"
-                              variant="outlined"
-                              sx={{
-                                fontSize: '0.8rem',
-                                color: feature.color,
-                                borderColor: alpha(feature.color, 0.3),
-                                bgcolor: alpha(feature.color, 0.05),
-                              }}
-                            />
-                          ))}
-                        </Stack>
-                      </Box>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            ))}
+                    </CardContent>
+                  </Card>
+                </Grid>
+              );
+            })}
           </Grid>
         </Container>
 
