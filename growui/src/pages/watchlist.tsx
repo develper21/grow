@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Link from 'next/link';
 import {
   Container,
   Box,
@@ -16,7 +17,10 @@ import {
   useTheme,
   alpha,
   Tooltip,
+  Divider,
 } from "@mui/material";
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import ShieldIcon from '@mui/icons-material/Shield';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from "axios";
 
@@ -124,53 +128,75 @@ export default function WatchlistPage() {
   }
 
   return (
-    <Box sx={{ backgroundColor: 'background.default', minHeight: '100vh' }}>
+    <Box sx={{ minHeight: '100vh', background: 'radial-gradient(circle at 10% 20%, rgba(124,93,250,0.1), transparent 45%)' }}>
       <Box
         sx={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, rgba(18,24,48,0.95) 0%, rgba(124,93,250,0.7) 55%, rgba(34,211,238,0.55) 100%)',
           color: 'white',
           py: { xs: 6, md: 8 },
-          px: 2,
         }}
       >
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography
-              variant="h2"
-              sx={{
-                fontWeight: 800,
-                mb: 2,
-                fontSize: { xs: '2rem', md: '3rem' },
-              }}
-            >
-              My Watchlist
-            </Typography>
-            <Typography
-              variant="h5"
-              sx={{
-                opacity: 0.95,
-                mb: 4,
-                maxWidth: 600,
-                mx: 'auto',
-                fontSize: { xs: '1.1rem', md: '1.3rem' },
-              }}
-            >
-              Track your favorite mutual funds and monitor their performance across different time periods
-            </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 1,
-                mb: 2,
-              }}
-            >
-              <Typography variant="body1" sx={{ opacity: 0.9 }}>
-                📊 {items.length} funds in watchlist
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing={4} alignItems="center" justifyContent="space-between">
+            <Box sx={{ maxWidth: 560 }}>
+              <Typography variant="overline" sx={{ letterSpacing: '0.35em', color: alpha('#f8fafc', 0.85) }}>
+                WATCHLIST PULSE
               </Typography>
+              <Typography variant="h3" sx={{ fontWeight: 700, mb: 1 }}>
+                Zero-latency intelligence across your curated funds.
+              </Typography>
+              <Typography variant="body1" sx={{ color: alpha('#f8fafc', 0.8) }}>
+                Monitor mandates, spot winners, and get ahead of compliance guardrails with AI signals designed for wealth teams.
+              </Typography>
+              <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} mt={4}>
+                <Link href="/funds" passHref legacyBehavior>
+                  <Button component="a" variant="contained" color="primary">
+                    Discover Funds
+                  </Button>
+                </Link>
+                <Link href="/portfolio" passHref legacyBehavior>
+                  <Button
+                    component="a"
+                    variant="outlined"
+                    sx={{ borderColor: alpha('#f8fafc', 0.4), color: '#f8fafc' }}
+                  >
+                    Launch Portfolio Lab
+                  </Button>
+                </Link>
+              </Stack>
             </Box>
-          </Box>
+
+            <Grid container spacing={2} maxWidth={420}>
+              {[
+                { label: 'Tracked Funds', value: items.length.toString(), icon: <TrendingUpIcon /> },
+                { label: 'Breaches', value: '3 critical', icon: <ShieldIcon /> },
+              ].map((stat) => (
+                <Grid item xs={12} sm={6} key={stat.label}>
+                  <Box
+                    sx={{
+                      borderRadius: 6,
+                      p: 3,
+                      backgroundColor: alpha('#050816', 0.4),
+                      border: '1px solid rgba(248,250,252,0.25)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 1,
+                    }}
+                  >
+                    <Avatar sx={{ bgcolor: 'rgba(124,93,250,0.3)', color: 'white', width: 40, height: 40 }}>
+                      {stat.icon}
+                    </Avatar>
+                    <Typography variant="h4" fontWeight={700}>
+                      {stat.value}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: alpha('#f8fafc', 0.7) }}>
+                      {stat.label}
+                    </Typography>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          </Stack>
         </Container>
       </Box>
 
@@ -183,13 +209,11 @@ export default function WatchlistPage() {
             <Typography variant="body1" sx={{ color: 'text.secondary', mb: 4 }}>
               Add funds to your watchlist to track their performance here
             </Typography>
-            <Button
-              variant="contained"
-              onClick={() => window.location.href = '/funds'}
-              sx={{ borderRadius: 3 }}
-            >
-              Explore Funds
-            </Button>
+            <Link href="/funds" passHref legacyBehavior>
+              <Button component="a" variant="contained">
+                Explore Funds
+              </Button>
+            </Link>
           </Box>
         ) : (
           <Grid container spacing={3}>
@@ -200,13 +224,13 @@ export default function WatchlistPage() {
                   <Card
                     sx={{
                       height: '100%',
-                      borderRadius: 4,
+                      borderRadius: 6,
+                      border: '1px solid rgba(124,93,250,0.25)',
+                      backgroundColor: alpha('#0f172a', 0.65),
                       transition: 'all 0.3s ease',
-                      border: '1px solid',
-                      borderColor: 'rgba(0, 0, 0, 0.08)',
                       '&:hover': {
-                        transform: 'translateY(-4px)',
-                        boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)',
+                        transform: 'translateY(-6px)',
+                        boxShadow: '0 25px 60px rgba(5, 8, 22, 0.45)',
                       },
                     }}
                   >
@@ -254,7 +278,7 @@ export default function WatchlistPage() {
                           <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5 }}>
                             Current NAV
                           </Typography>
-                          <Typography variant="h5" sx={{ fontWeight: 700, color: 'primary.main' }}>
+                          <Typography variant="h5" sx={{ fontWeight: 700, color: '#67e8f9' }}>
                             ₹{fund.currentNAV.toFixed(2)}
                           </Typography>
                           {fund?.currentNAVDate && (
@@ -282,14 +306,15 @@ export default function WatchlistPage() {
                         <Typography variant="caption" sx={{ color: 'text.secondary' }}>
                           Added {new Date(e.item.addedAt).toLocaleDateString()}
                         </Typography>
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          onClick={() => window.location.href = `/scheme/${e.item.schemeCode}`}
-                          sx={{ borderRadius: 2 }}
-                        >
-                          View Details
-                        </Button>
+                        <Link href={`/scheme/${e.item.schemeCode}`} passHref legacyBehavior>
+                          <Button
+                            component="a"
+                            variant="outlined"
+                            size="small"
+                          >
+                            View Details
+                          </Button>
+                        </Link>
                       </Box>
                     </CardContent>
                   </Card>
