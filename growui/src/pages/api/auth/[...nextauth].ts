@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { User } from "@/models/User";
 import dbConnect from "@/utils/db";
 import bcrypt from "bcryptjs";
+import { verifyAadhaarOtp } from "@/server/otpService";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -10,26 +11,58 @@ export const authOptions: NextAuthOptions = {
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
+        aadhaarNumber: { label: "Aadhaar", type: "text" },
+        otp: { label: "OTP", type: "text" }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        const email = credentials?.email;
+        const password = credentials?.password;
+        const aadhaarNumber = credentials?.aadhaarNumber;
+        const otp = credentials?.otp;
+
+        if (!email && !(aadhaarNumber && otp)) {
           return null;
         }
 
         try {
           await dbConnect();
 
-          const user = await User.findOne({ email: credentials.email });
+          if (aadhaarNumber && otp) {
+            const normalized = aadhaarNumber.replace(/\D/g, "");
+            if (normalized.length !== 12 || otp.length !== 6) {
+              return null;
+            }
+
+            const user = await User.findOne({ aadhaarNumber: normalized });
+            if (!user) {
+              return null;
+            }
+
+            const validOtp = await verifyAadhaarOtp(normalized, otp);
+            if (!validOtp) {
+              return null;
+            }
+
+            return {
+              id: user._id.toString(),
+              email: user.email,
+              name: user.name,
+              role: user.role,
+            };
+          }
+
+          if (!email || !password) {
+            return null;
+          }
+
+          const user = await User.findOne({ email });
 
           if (!user) {
             return null;
           }
 
-          const isPasswordValid = await bcrypt.compare(
-            credentials.password,
-            user.password
-          );
+          const isPasswordValid = await bcrypt.compare(password, user.password);
 
           if (!isPasswordValid) {
             return null;
@@ -50,6 +83,10 @@ export const authOptions: NextAuthOptions = {
   ],
   session: {
     strategy: "jwt",
+    maxAge: 24 * 60 * 60, // 24 hours
+  },
+  jwt: {
+    maxAge: 24 * 60 * 60,
   },
   callbacks: {
     async jwt({ token, user }) {
