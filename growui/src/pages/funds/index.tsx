@@ -19,6 +19,7 @@ import {
   Avatar,
   Button,
   IconButton,
+  Stack,
   useTheme,
   Paper,
   alpha,
@@ -59,15 +60,16 @@ const FundCard = ({ scheme, onClick, fundHouse, category, isInWatchlist = false,
     <Card
       sx={{
         height: '100%',
-        borderRadius: 3,
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+        borderRadius: 5,
+        transition: 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)',
         border: '1px solid',
-        borderColor: isInWatchlist ? 'primary.main' : 'rgba(0, 0, 0, 0.08)',
-        background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%)',
+        borderColor: isInWatchlist ? alpha(theme.palette.primary.main, 0.6) : 'rgba(148, 163, 184, 0.2)',
+        background: 'linear-gradient(140deg, rgba(10,16,32,0.9) 0%, rgba(14,23,42,0.85) 60%, rgba(124,93,250,0.15) 100%)',
+        boxShadow: '0 30px 70px rgba(2, 6, 23, 0.55)',
         '&:hover': {
-          transform: 'translateY(-6px)',
-          boxShadow: '0 12px 28px rgba(0, 0, 0, 0.15)',
-          borderColor: 'primary.main',
+          transform: 'translateY(-8px)',
+          borderColor: alpha(theme.palette.secondary.main, 0.8),
+          boxShadow: '0 35px 90px rgba(34, 211, 238, 0.3)',
         },
         cursor: 'pointer',
         position: 'relative',
@@ -89,23 +91,24 @@ const FundCard = ({ scheme, onClick, fundHouse, category, isInWatchlist = false,
 
       {/* Watchlist Button */}
       {onWatchlistToggle && (
-        <Box sx={{ position: 'absolute', top: 10, right: 10, zIndex: 1 }}>
-          <Tooltip title={isInWatchlist ? "Remove from Watchlist" : "Add to Watchlist"}>
+        <Box sx={{ position: 'absolute', top: 12, right: 12, zIndex: 1 }}>
+          <Tooltip title={isInWatchlist ? 'Remove from Watchlist' : 'Add to Watchlist'}>
             <IconButton
               size="small"
               onClick={handleWatchlistClick}
               sx={{
-                bgcolor: isInWatchlist ? alpha(theme.palette.primary.main, 0.15) : 'rgba(255, 255, 255, 0.95)',
+                bgcolor: isInWatchlist ? alpha(theme.palette.primary.main, 0.2) : 'rgba(15, 23, 42, 0.7)',
                 color: isInWatchlist ? 'primary.main' : 'text.secondary',
-                backdropFilter: 'blur(10px)',
+                borderRadius: 2,
+                border: '1px solid rgba(255,255,255,0.12)',
                 '&:hover': {
-                  bgcolor: isInWatchlist ? alpha(theme.palette.primary.main, 0.25) : alpha(theme.palette.primary.main, 0.1),
+                  bgcolor: isInWatchlist ? alpha(theme.palette.primary.main, 0.3) : alpha(theme.palette.primary.main, 0.1),
                   color: 'primary.main',
                 },
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                boxShadow: '0 8px 20px rgba(0, 0, 0, 0.35)',
               }}
             >
-              {isInWatchlist ? <BookmarkIcon fontSize="small" /> : <BookmarkBorderIcon fontSize="small" />}
+              {isInWatchlist ? <BookmarkIcon sx={{ fontSize: 18 }} /> : <BookmarkBorderIcon sx={{ fontSize: 18 }} />}
             </IconButton>
           </Tooltip>
         </Box>
@@ -116,14 +119,14 @@ const FundCard = ({ scheme, onClick, fundHouse, category, isInWatchlist = false,
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <Avatar
               sx={{
-                bgcolor: alpha(theme.palette.primary.main, 0.15),
+                bgcolor: alpha(theme.palette.primary.main, 0.18),
                 color: 'primary.main',
-                width: 44,
-                height: 44,
-                fontSize: '1rem',
+                width: 42,
+                height: 42,
+                fontSize: '0.95rem',
                 fontWeight: 700,
-                border: '2px solid',
-                borderColor: alpha(theme.palette.primary.main, 0.2),
+                border: '1px solid',
+                borderColor: alpha(theme.palette.primary.main, 0.35),
               }}
             >
               {fundHouse.substring(0, 2).toUpperCase()}
@@ -133,18 +136,18 @@ const FundCard = ({ scheme, onClick, fundHouse, category, isInWatchlist = false,
                 label={category}
                 size="small"
                 sx={{
-                  bgcolor: alpha(theme.palette.primary.main, 0.1),
-                  color: 'primary.main',
+                  bgcolor: alpha(theme.palette.primary.main, 0.18),
+                  color: '#f8fafc',
                   fontWeight: 600,
-                  fontSize: '0.7rem',
+                  fontSize: '0.65rem',
                   mb: 0.5,
                 }}
               />
               <Typography
                 variant="body2"
                 sx={{
-                  color: 'text.secondary',
-                  fontSize: '0.8rem',
+                  color: alpha('#f8fafc', 0.65),
+                  fontSize: '0.78rem',
                   fontWeight: 500,
                 }}
               >
@@ -165,7 +168,7 @@ const FundCard = ({ scheme, onClick, fundHouse, category, isInWatchlist = false,
             WebkitBoxOrient: 'vertical',
             overflow: 'hidden',
             minHeight: '3.2em',
-            color: 'text.primary',
+            color: '#f8fafc',
           }}
         >
           {scheme.schemeName.replace(/^[^-]+-\s*/, '')}
@@ -173,15 +176,15 @@ const FundCard = ({ scheme, onClick, fundHouse, category, isInWatchlist = false,
 
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 'auto' }}>
           <Box>
-            <Typography variant="body2" sx={{ color: 'text.secondary', mb: 0.5, fontSize: '0.75rem' }}>
+            <Typography variant="body2" sx={{ color: alpha('#f8fafc', 0.6), mb: 0.5, fontSize: '0.72rem' }}>
               Fund Code
             </Typography>
-            <Typography variant="h6" sx={{ fontWeight: 800, color: 'primary.main', fontSize: '1.1rem' }}>
+            <Typography variant="h6" sx={{ fontWeight: 800, color: 'primary.main', fontSize: '1rem' }}>
               {scheme.schemeCode}
             </Typography>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <TrendingUpIcon sx={{ color: 'success.main', fontSize: 20 }} />
+            <TrendingUpIcon sx={{ color: 'success.main', fontSize: 18 }} />
             <Typography variant="body2" sx={{ color: 'success.main', fontWeight: 600 }}>
               Active
             </Typography>
@@ -293,9 +296,14 @@ export default function FundsPage() {
     try {
       setLoading(true);
       setError('');
-      const response = await axios.get('/api/mf');
-      setSchemes(response.data);
-      setFilteredSchemes(response.data);
+      const response = await axios.get('/api/mf', {
+        params: {
+          limit: 10000,
+        },
+      });
+      const schemesData = Array.isArray(response.data) ? response.data : response.data.data;
+      setSchemes(schemesData);
+      setFilteredSchemes(schemesData);
     } catch (err) {
       setError('Failed to load mutual funds. Please try again.');
       console.error(err);
@@ -407,53 +415,38 @@ export default function FundsPage() {
   }
 
   return (
-    <Box sx={{ backgroundColor: 'background.default', minHeight: '100vh' }}>
+    <Box
+      sx={{
+        background: 'radial-gradient(circle at 10% 20%, rgba(124,93,250,0.15), transparent 50%)',
+        minHeight: '100vh',
+      }}
+    >
       <Box
         sx={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(124,93,250,0.65) 45%, rgba(34,211,238,0.5) 100%)',
           color: 'white',
           py: { xs: 6, md: 8 },
-          px: 2,
         }}
       >
         <Container maxWidth="lg">
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography
-              variant="h2"
-              sx={{
-                fontWeight: 800,
-                mb: 2,
-                fontSize: { xs: '2rem', md: '3rem' },
-              }}
-            >
-              Discover Mutual Funds
-            </Typography>
-            <Typography
-              variant="h5"
-              sx={{
-                opacity: 0.95,
-                mb: 4,
-                maxWidth: 600,
-                mx: 'auto',
-                fontSize: { xs: '1.1rem', md: '1.3rem' },
-              }}
-            >
-              Explore thousands of mutual funds with advanced filtering, search, and detailed analytics
-            </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 1,
-                mb: 2,
-              }}
-            >
-              <Typography variant="body1" sx={{ opacity: 0.9 }}>
-                📊 {schemes.length.toLocaleString()} funds available
+          <Stack direction={{ xs: 'column', md: 'row' }} justifyContent="space-between" spacing={3} alignItems="center">
+            <Box sx={{ maxWidth: 560 }}>
+              <Typography variant="overline" sx={{ letterSpacing: '0.4em', color: alpha('#f8fafc', 0.85) }}>
+                RESEARCH & FUNDS
+              </Typography>
+              <Typography variant="h3" sx={{ fontWeight: 700, mb: 1 }}>
+                Discover mutual funds with institutional-grade clarity.
+              </Typography>
+              <Typography variant="body1" sx={{ color: alpha('#f8fafc', 0.8) }}>
+                Filter, sort, and bookmark thousands of schemes inside the premium dashboard environment.
               </Typography>
             </Box>
-          </Box>
+            <Chip
+              label={`📊 ${schemes.length.toLocaleString()} funds available`}
+              color="secondary"
+              sx={{ fontWeight: 600, px: 2, py: 0.5, borderRadius: 5, backgroundColor: alpha('#0b1120', 0.35) }}
+            />
+          </Stack>
         </Container>
       </Box>
 
@@ -463,14 +456,14 @@ export default function FundsPage() {
           sx={{
             p: 3,
             mb: 4,
-            borderRadius: 4,
-            border: '1px solid',
-            borderColor: 'rgba(0, 0, 0, 0.08)',
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.8) 0%, rgba(248,250,252,0.8) 100%)',
+            borderRadius: 5,
+            border: '1px solid rgba(124,93,250,0.25)',
+            background: 'linear-gradient(135deg, rgba(11,17,30,0.92), rgba(15,23,42,0.9))',
+            boxShadow: '0 25px 60px rgba(2,6,23,0.55)',
           }}
         >
           <Typography variant="h6" sx={{ mb: 3, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 1 }}>
-            <FilterListIcon />
+            <FilterListIcon sx={{ fontSize: 20 }} />
             Filters & Search
           </Typography>
 
@@ -484,15 +477,12 @@ export default function FundsPage() {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <SearchIcon sx={{ color: 'text.secondary' }} />
+                      <SearchIcon sx={{ color: 'text.secondary', fontSize: 18 }} />
                     </InputAdornment>
                   ),
                   sx: {
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: 3,
-                      backgroundColor: 'background.paper',
-                    }
-                  }
+                    backgroundColor: 'rgba(15,23,42,0.7)',
+                  },
                 }}
               />
             </Grid>
@@ -505,8 +495,7 @@ export default function FundsPage() {
                   label="Category"
                   onChange={(e) => setCategoryFilter(e.target.value)}
                   sx={{
-                    borderRadius: 3,
-                    backgroundColor: 'background.paper',
+                    backgroundColor: 'rgba(15,23,42,0.7)',
                   }}
                 >
                   {categories.map((cat) => (
@@ -526,8 +515,7 @@ export default function FundsPage() {
                   label="Sort By"
                   onChange={(e) => setSortBy(e.target.value)}
                   sx={{
-                    borderRadius: 3,
-                    backgroundColor: 'background.paper',
+                    backgroundColor: 'rgba(15,23,42,0.7)',
                   }}
                 >
                   {sortOptions.map((option) => (
@@ -554,7 +542,7 @@ export default function FundsPage() {
                 sx={{
                   textTransform: 'none',
                   fontSize: '0.8rem',
-                  color: 'primary.main',
+                  color: 'secondary.main',
                 }}
               >
                 Clear Filters
@@ -592,7 +580,7 @@ export default function FundsPage() {
                 setSearchQuery('');
                 setCategoryFilter('all');
               }}
-              sx={{ borderRadius: 3 }}
+              sx={{ borderRadius: 5 }}
             >
               Clear All Filters
             </Button>
