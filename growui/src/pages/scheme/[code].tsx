@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Container,
   Box,
@@ -15,6 +15,7 @@ import {
   ToggleButtonGroup,
   Breadcrumbs,
   Link,
+  Button,
 } from '@mui/material';
 import { useRouter } from 'next/router';
 import axios from 'axios';
@@ -27,6 +28,7 @@ import SWPCalculator from '@/components/SWPCalculator';
 import ComparisonCalculator from '@/components/ComparisonCalculator';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import { formatNumber } from '@/utils/calculations';
+import { TransactionWizard, OrderType } from '@/components/orders/TransactionWizard';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -70,6 +72,9 @@ export default function SchemeDetailPage() {
     { period: '3 Years', returns: null, loading: true },
     { period: '5 Years', returns: null, loading: true },
   ]);
+
+  const [wizardOpen, setWizardOpen] = useState(false);
+  const [wizardType, setWizardType] = useState<OrderType>('lumpsum');
 
   const fetchSchemeDetails = useCallback(async () => {
     try {
@@ -119,6 +124,30 @@ export default function SchemeDetailPage() {
     }
   }, [code, fetchSchemeDetails, fetchReturns]);
 
+  const latestNAV = scheme?.data[0];
+
+  const wizardScheme = useMemo(() => {
+    if (!scheme || !latestNAV) {
+      return {
+        code: Number(code ?? 0),
+        name: '',
+        nav: '0',
+        fundHouse: '',
+      };
+    }
+    return {
+      code: scheme.meta.scheme_code,
+      name: scheme.meta.scheme_name,
+      nav: latestNAV.nav,
+      fundHouse: scheme.meta.fund_house,
+    };
+  }, [scheme, latestNAV, code]);
+
+  const openWizard = (type: OrderType) => {
+    setWizardType(type);
+    setWizardOpen(true);
+  };
+
   if (loading) {
     return (
       <Container maxWidth="lg" sx={{ py: 8, textAlign: 'center' }}>
@@ -137,8 +166,6 @@ export default function SchemeDetailPage() {
       </Container>
     );
   }
-
-  const latestNAV = scheme.data[0];
 
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -184,10 +211,10 @@ export default function SchemeDetailPage() {
                 Current NAV
               </Typography>
               <Typography variant="h5" sx={{ fontWeight: 600, color: 'primary.main' }}>
-                ₹{formatNumber(parseFloat(latestNAV.nav))}
+                {latestNAV ? `₹${formatNumber(parseFloat(latestNAV.nav))}` : '—'}
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                as of {latestNAV.date}
+                as of {latestNAV ? latestNAV.date : '—'}
               </Typography>
             </Grid>
             <Grid item xs={6} sm={3}>
@@ -197,6 +224,22 @@ export default function SchemeDetailPage() {
               <Typography variant="h6" sx={{ fontWeight: 600 }}>
                 {scheme.meta.scheme_code}
               </Typography>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Typography variant="body2" color="text.secondary">
+                Actions
+              </Typography>
+              <Box display="flex" flexWrap="wrap" gap={1.5} mt={1}>
+                <Button variant="contained" onClick={() => openWizard('lumpsum')}>
+                  Buy now
+                </Button>
+                <Button variant="outlined" onClick={() => openWizard('sip')}>
+                  Start SIP
+                </Button>
+                <Button color="inherit" onClick={() => openWizard('redeem')}>
+                  Redeem
+                </Button>
+              </Box>
             </Grid>
           </Grid>
         </CardContent>
@@ -257,6 +300,13 @@ export default function SchemeDetailPage() {
       <TabPanel value={tabValue} index={3}>
         <ComparisonCalculator schemeCode={code as string} />
       </TabPanel>
+
+      <TransactionWizard
+        open={wizardOpen}
+        onClose={() => setWizardOpen(false)}
+        scheme={wizardScheme}
+        defaultOrderType={wizardType}
+      />
     </Container>
   );
 }
