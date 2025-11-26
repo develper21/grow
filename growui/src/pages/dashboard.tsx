@@ -80,16 +80,53 @@ export default function UnifiedDashboard() {
       <Grid item xs={12}>
         <Box
           sx={{
-            background: 'linear-gradient(135deg, rgba(15,23,42,0.95) 0%, rgba(124,93,250,0.65) 45%, rgba(34,211,238,0.55) 100%)',
             borderRadius: 5,
             px: { xs: 3, md: 6 },
             py: { xs: 5, md: 7 },
             position: 'relative',
             overflow: 'hidden',
-            boxShadow: '0 40px 120px rgba(8,15,40,0.5)',
+            backgroundColor: '#1d2b5fff',
           }}
         >
-          <Box sx={{ maxWidth: 640 }}>
+          {/* Exact Windsurf Animated Background */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: 'radial-gradient(146.64% 134.09% at 17.84% 0%, #FFE47A 0.1%, #FB9CE5 17.31%, #096FFF 29.33%, #011C42 60.58%)',
+              backgroundSize: '200% 200%',
+              animation: 'windsurfGradient 15s ease-in-out infinite',
+              zIndex: 0,
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'radial-gradient(247.5% 100% at 50% 0%, rgb(255, 232, 142) 14.6%, rgb(251, 156, 229) 34.58%, rgb(9, 111, 255) 55.65%, rgb(1, 28, 66) 88.45%)',
+                backgroundSize: '300% 300%',
+                animation: 'windsurfGradient2 20s ease-in-out infinite reverse',
+                opacity: 0.7,
+                mixBlendMode: 'screen',
+              },
+              '@keyframes windsurfGradient': {
+                '0%': { backgroundPosition: '0% 0%' },
+                '50%': { backgroundPosition: '100% 100%' },
+                '100%': { backgroundPosition: '0% 0%' },
+              },
+              '@keyframes windsurfGradient2': {
+                '0%': { backgroundPosition: '0% 0%' },
+                '33%': { backgroundPosition: '50% 30%' },
+                '66%': { backgroundPosition: '100% 60%' },
+                '100%': { backgroundPosition: '0% 0%' },
+              },
+            }}
+          />
+          <Box sx={{ maxWidth: 640, position: 'relative', zIndex: 1 }}>
             <Typography variant="overline" sx={{ letterSpacing: '0.45em', color: alpha('#f8fafc', 0.8) }}>
               COMMAND DECK
             </Typography>
