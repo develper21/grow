@@ -28,10 +28,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const retryInfo = getOtpRetryInfo(normalized);
-    if (!retryInfo.allowed) {
+    if (!retryInfo.canRetry) {
+      const timeLeft = retryInfo.timeLeft || 0;
       return res.status(429).json({
-        message: `Please wait ${Math.ceil(retryInfo.retryAfterMs / 1000)} seconds before requesting another OTP`,
-        retryAfterMs: retryInfo.retryAfterMs,
+        message: `Please wait ${Math.ceil(timeLeft / 1000)} seconds before requesting another OTP`,
+        retryAfterMs: timeLeft,
       });
     }
 

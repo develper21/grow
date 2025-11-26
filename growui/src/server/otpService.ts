@@ -45,3 +45,21 @@ export const hasActiveOtp = (aadhaarNumber: string) => {
   }
   return true;
 };
+
+export const getOtpRetryInfo = (aadhaarNumber: string) => {
+  const normalized = normalize(aadhaarNumber);
+  const record = otpStore.get(normalized);
+  if (!record) {
+    return { canRetry: true, nextRetryAt: null };
+  }
+  const timeLeft = record.expiresAt - Date.now();
+  if (timeLeft <= 0) {
+    otpStore.delete(normalized);
+    return { canRetry: true, nextRetryAt: null };
+  }
+  return { 
+    canRetry: false, 
+    nextRetryAt: record.expiresAt,
+    timeLeft 
+  };
+};
