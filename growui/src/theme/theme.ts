@@ -110,11 +110,7 @@ export const theme = createTheme({
   shape: {
     borderRadius: 6,
   },
-  shadows: Array.from({ length: 25 }).map((_, index) => {
-    if (index === 0) return 'none';
-    const strength = 0.04 + index * 0.01;
-    return `0 20px 50px rgba(8, 15, 40, ${strength.toFixed(2)})`;
-  }) as unknown as typeof createTheme.arguments,
+  shadows: Array.from({ length: 25 }).map(() => 'none') as unknown as typeof createTheme.arguments,
   components: {
     MuiCssBaseline: {
       styleOverrides: {
@@ -153,7 +149,7 @@ export const theme = createTheme({
           transition: 'transform 0.2s ease, box-shadow 0.2s ease',
           '&:hover': {
             transform: 'translateY(-2px)',
-            boxShadow: '0 20px 40px rgba(124, 93, 250, 0.3)',
+            boxShadow: 'none',
           },
         }),
         containedPrimary: {
@@ -174,13 +170,8 @@ export const theme = createTheme({
           backgroundColor: '#101626',
           borderRadius: 8,
           border: '1px solid rgba(124,93,250,0.2)',
-          boxShadow: '0 35px 80px rgba(5, 8, 22, 0.45)',
           backdropFilter: 'blur(18px)',
-          transition: 'transform 0.35s ease, box-shadow 0.35s ease',
-          '&:hover': {
-            transform: 'translateY(-6px)',
-            boxShadow: '0 45px 100px rgba(34, 211, 238, 0.25)',
-          },
+          transition: 'border-color 0.3s ease',
         },
       },
     },
